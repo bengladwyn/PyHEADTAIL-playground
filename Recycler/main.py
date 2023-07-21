@@ -219,7 +219,7 @@ if __name__ == '__main__':
     # iteration, attached to monitor name:
     it = 0
     # outputpath relative to this file:
-    outputpath = r'C:\\Users\\bengl\Documents\\PyHEADTAIL-playground\\full_simulations\\LHC_instability\\.'
+    outputpath = r'C:\\Users\bengl\Documents\\PyHEADTAIL-playground\\Recycler'
 
     # run the simulation:
     run(intensity=1.1e11, chroma=12, i_oct=0)
