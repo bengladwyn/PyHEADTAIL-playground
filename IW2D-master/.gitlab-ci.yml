@@ -1,0 +1,36 @@
+stages:
+  - test
+
+variables:
+  PY_IMAGE: python:3.7-slim-buster
+
+run-pytests:
+  stage: test
+  only:
+    - merge_requests
+  image: $PY_IMAGE
+  before_script:
+    - export IW2D_FLINT_ARB=1
+    - apt-get update
+    - apt-get -y install gcc
+    - apt-get -y install build-essential
+    - apt-get -y install libgsl-dev
+    - apt-get -y install libmpfr-dev
+    - apt-get -y install libflint-dev
+    - apt-get -y install libflint-arb-dev
+    - apt-get -y install m4
+    - pip install .[test]
+  script:
+    - pytest
+
+run-pre-commit-hooks:
+  stage: test
+  only:
+    - merge_requests
+  image: $PY_IMAGE
+  before_script:
+    - apt-get update
+    - apt-get install -y git
+    - pip install pre-commit
+  script:
+    - pre-commit run --all-files

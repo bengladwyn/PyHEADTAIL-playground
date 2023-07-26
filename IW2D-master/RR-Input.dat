@@ -1,0 +1,30 @@
+Machine:    RR
+Relativistic Gamma: 9.46919641272
+Impedance Length in m:  3319.41882346
+Number of upper layers in the chamber wall: 2
+Layer 1 inner half gap in mm:   22
+Layer 1 DC resistivity (Ohm.m): 7.4e-7
+Layer 1 relaxation time for resistivity (ps):   0.000138
+Layer 1 real part of dielectric constant:   1
+Layer 1 magnetic susceptibility:    0
+Layer 1 relaxation frequency of permeability (MHz): Infinity
+Layer 1 thickness in mm:    1.65
+Layer 2 DC resistivity (Ohm.m): Infinity
+Layer 2 relaxation time for resistivity (ps):   0
+Layer 2 real part of dielectric constant:   1
+Layer 2 magnetic susceptibility:    0
+Layer 2 relaxation frequency of permeability (MHz): Infinity
+Layer 2 thickness in mm:    Infinity
+Number of lower layers in the chamber wall: 2
+Top bottom symmetry (yes or no):    yes
+linear (1) or logarithmic (0) or both (2) scan in z for the wake:   2
+sampling distance in m for the linear sampling: 0.5e-5
+zmin in m of the linear sampling:   0.5e-5
+zmax in m of the linear sampling:   0.01
+Number of points per decade for the logarithmic sampling:   100
+exponent (10^) of zmin (in m) of the logarithmic sampling:  -2
+exponent (10^) of zmax (in m) of the logarithmic sampling:  6
+added z [m]:
+factor weighting the longitudinal impedance error:  1.
+tolerance (in wake units) to achieve:   1.e12
+frequency above which the mesh bisecting is linear [Hz]:    1.e10

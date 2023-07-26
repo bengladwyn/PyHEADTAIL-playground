@@ -1,0 +1,15 @@
+include pyproject.toml
+
+# Include the README
+include *.md
+
+# Include the LICENSE
+include LICENSE.txt
+
+# Include external libraries
+include IW2D/External_libs/compile_ext_libs.sh
+include IW2D/External_libs/gmp-6.0.0a.tar.gz
+include IW2D/External_libs/mpfr-3.1.2.tar.gz
+
+# Include c++ files
+recursive-include IW2D/cpp *.cc *.cpp *.h

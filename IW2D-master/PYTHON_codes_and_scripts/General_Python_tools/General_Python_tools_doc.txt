@@ -1,0 +1,700 @@
+#########################################################################################
+#########################################################################################
+#											#
+#	Some basic info on functions in the modules in 'General_Python_tools'		#
+#											#
+#########################################################################################
+#########################################################################################
+
+
+#################################################################################
+#    C_complex									#
+# library to emulate the standard complex C type (C99)				#
+#################################################################################
+
+FILE
+    C_complex.py
+
+CLASSES
+    _ctypes.Structure(_ctypes._CData)
+        Complex
+    
+    class Complex(_ctypes.Structure)
+     |  class to emulate std::complex<double> C type
+     |  
+     |  imag
+     |      imaginary part (Structure/Union member)
+     |  
+     |  real
+     |      real part (Structure/Union member)
+     |  
+
+FUNCTIONS
+    Complex_to_complex(z)
+        conversion from a C Complex z to a python complex
+       
+    complex_to_Complex(z)
+        conversion from a python complex z to a C Complex
+
+
+#################################################################################
+#    datetime_lib								#
+# library to use dates & times							#
+#################################################################################
+
+FILE
+    datetime_lib.py
+
+FUNCTIONS
+    plotdate(time, data, leg, dat, patcol, ylab, ax, logflag, lw=3.0, plotevery=1, colr=None, ms=10.0)
+        function plotting w.r.t time.
+        Arguments (the first 8 ones are mandatory, the others are optional):
+        - time: time data (datetime format),
+        - data: y data,
+        - leg: label for the legend,
+        - dat: date (datetime format) at which the curve was taken,
+        - patcol: pattern and/or color for the curve (e.g. '--xb'),
+        - ylab: label for the y-axis,
+        - ax: axes on which to plot (from e.g. init_figure),
+        - logflag: 0 for linear plot, 1 for logarithmic plot in x / linear in y,
+        2 for logarithmic plot in y / linear in x, 3 for log-log plots,
+        - lw: linewidth of the curve,
+        - plotevery: plot every "plotevery" points,
+        - colr: re-define the color of the curve (rgb format for instance),
+        - ms: size of the markers (crosses, circles, or other), if present.
+    
+    set_axisdate(axi, axisname, timeinterval, tz=None)
+        set date on the axis 'axisname' ('x' or 'y') of the axes axi, using the timeinterval given.
+    
+    tb(f1)
+    
+    tb_(f1)
+        return a string in the format %Y-%m-%d %H:%M:%S corresponding to the pylab datetime (numeric format) f1
+    
+    tt(f1)
+
+#################################################################################
+#    elliptic									#
+# library for generalized elliptic functions and integrals			#
+#################################################################################
+
+FILE
+    elliptic.py
+
+FUNCTIONS
+    ellipeinc_comp(phi, m)
+        extension of scipy incomplete elliptic integral of the second kind for:
+         - any complex phi,
+         - still 0<=m<=1.
+        Uses formulas from Abramowitz-Stegun (pp. 592-593)
+    
+    ellipeinc_gen(phi, m)
+        extension of scipy incomplete elliptic integral of the second kind for:
+        - any complex phi,
+        - any real m.
+        Uses formulas from Abramowitz-Stegun (pp. 592-593)
+    
+    ellipj_comp(u, m)
+        extension of scipy Jacobian elliptic functions for:
+        - any complex u
+        - still 0<=m<=1.
+        Uses formulas from Abramowitz-Stegun (pp. 575 - section 16.21)
+    
+    ellipj_correct(u, m)
+        correction of scipy Jacobian elliptic functions for real u
+        and 0<=m<=1.
+        Uses formulas from Abramowitz-Stegun (pp. 569 - section 16.1.5)
+    
+    ellipkinc_comp(phi, m)
+        extension of scipy incomplete elliptic integral of the first kind for:
+         - any complex phi,
+         - still 0<=m<=1.
+        Uses formulas from Abramowitz-Stegun (pp. 592-593)
+    
+    ellipkinc_gen(phi, m)
+        extension of scipy incomplete elliptic integral of the first kind for:
+        - any complex phi,
+        - any real m.
+        Uses formulas from Abramowitz-Stegun (pp. 592-593)
+    
+    solve_cot2lambda(phi, psi, m)
+        solve second order equation to get cot^2(lambda), then lambda and mu
+        useful to compute complex amplitude case of incomplete elliptic integrals
+        (Abram-Stegun top of p. 593, 17.4.11 and 17.4.12)
+        
+        NOTE: some modifications w.r.t. Abramowitz, to get same as Mathematica:
+         - sign of mu is the same sign as psi,
+         - case phi=pi/2 developped separately (I did a Taylor expansion to solve the equations)
+
+#################################################################################
+#    fourier_lib								#
+# library to compute Fourier integrals of smooth functions			#
+# with a non-equidistant mesh							#
+#################################################################################
+
+# Note: there is a test inside this module - you can run it by typing in a terminal
+./fourier_lib.py
+
+FILE
+    fourier_lib.py
+
+FUNCTIONS
+ 
+    
+    bisect_and_calculate(f, i, omegai, fi, di, bisect_type='log', pchip_flag=True)
+        bisect the interval at the right of omegai[i],
+        and recalculate and redefine accordingly omegai, fi (values of 
+        the function f at omegai) and the pchip derivatives di if 
+        pchip_flag is True.
+        bisect_type can be 'log' (middle point in log scale) or 'lin'
+        (middle point in linear scale)
+        It also computes the interpolated value (before bisection) at the middle point.
+   
+    
+    compute_intercalate_pchip_derivatives(i, omegai, fi, di)
+        compute pchip derivatives from omegai and fi, and insert them at the places
+        i, i+1 and i+2 in table di (shifting di to the right above i+1).
+   
+    
+    correction_functions(theta, interp='cubic', limit=0.001)
+        ' computes correction functions W and alpha_j for Fourier integrals, as
+        defined in Numerical Recipes in C (2nd ed, chap. 13, p. 586-587)
+        - theta=t*deltaomega
+        - interp is the interpolation type: 'linear' or 'cubic'
+        - limit: limit in theta below which we use the truncated Taylor series
+        instead of the exact formula
+    
+    
+    fourier_int_converged(f, df, tscan, omegamin, omegamax, tolabs=10000000000.0, tolrel=0.001, omegamin_ini=None, omegamax_ini=None, criterion='absabs', bisect='log', interp='pchip')
+        compute semi-infinite Fourier integral from omegamin to omegamax of a
+        function f, i.e. the integral of f(omega)*exp(j*omega*t) for any t in
+        tscan (table) and for f given in input.
+        df is another function giving the derivative of f. It can be 
+        identically zero.
+        We use the function fourier_integral_any_sampling, and make an automatic
+        convergence vs sampling (see N. Mounet PhD thesis, EPFL 5305)
+        
+        omegamin can be -np.inf, omegamax can be np.inf. They cannot be both infinite
+        (do 2 separate semi-infinite integrals in such as case).
+        If omegamin_ini is None, begins interval at omegamin (it assumes no singularity 
+        of f there), otherwise the interval will initially begin at omegamin_ini
+        and convergence will be checked with respect to this value (getting it
+        closer and closer to omegamin). Same for omegamax_ini.
+        
+        2 possible convergence criterions:
+        - criterion begins by 'abs': make 
+        int_omegamin^omegamax |current_interpolation-interpolation_when_bisecting_all_intervals|<=tolabs,
+        Then for the convergence vs minimum and maximum frequencies (when needed), a criterion
+        in relative is still used (see just below). Criterion can then be:
+            * absabs: difference in absolute value matters,
+            * absreal: difference of real part matters,
+            * absimag: difference of imaginary part matters,
+            * absrealimag: difference of both real & imaginary part matters.
+        - criterion begins by 'rel': make Fourier integral difference between the current interpolation
+        and the interpolation when bisecting all intervals, smaller than tolrel for
+        any t in tscan, in relative. Then, criterion can be:
+            * relabs: difference in absolute value matters,
+            * relreal: difference of real part matters,
+            * relimag: difference of imaginary part matters,
+            * relrealimag: difference of both real & imaginary part matters.
+        
+        2 possible kinds of interval bisection to get the next interpolation of f (i.e. the
+        next step in the convergence process):
+        - bisect=='log': bisection at middle point in log scale,
+        - bisect=='lin': bisection at middle point in linear scale.
+        
+        The kind of interpolation ('linear' or 'pchip') is chosen to be the same on all
+        intervals and given by optional argument interp (default='pchip').
+    
+
+    fourier_int_convergence_boundary(f, df, omegabound, tscan, omegai, fi, di, omegainew, finew, dinew, min_or_max, pchip_flag=True, tolrel=0.001, criterion='abs')
+        convergence loop for Fourier integral, vs minimum (if min_or_max=0) or maximum 
+        (if min_or_max !=0) angular frequency (given in omegabound) of the scan omegai.
+        functions values at the omegai's are in fi, pchip derivatives (used when pchip_flag is True) in di.
+        f and df are the function and its derivative.
+        Criterion can be:
+            - abs: difference in absolute value matters,
+            - real: difference of real part matters,
+            - imag: difference of imaginary part matters,
+            - realimag: difference of both real & imaginary part matters.
+    
+
+    fourier_integral_any_sampling(tscan, omegai, fi, df=0.0, interp=0, flaginf=1, eps=1e-20, di=None)
+        compute semi-infinite Fourier integral from omegai[0] to omegai[-1]
+        (or +/- infinity if flaginf is True) of a function f, i.e. the integral 
+        of f(omega)*exp(j*omega*t) for any t in tscan (table) and for f given by 
+        its interpolation table fi of type 'interp' at the points omegai 
+        (0 for cubic 'pchip' interpolation, 1 for linear interpolation). In general
+        f is complex.
+        
+        if flaginf is non-zero, a correcting term is added (at each t) to take into
+        account the semi-infinite integral above (if flaginf>0) or below (if flaginf<0)
+        the angular frequency range omegai. Then df gives the derivative of the function
+        at the point of the range closest to this semi-infinite integral. It can be zero.
+        
+        interp can be a single integer or a tables of them, of the length of omegai -1,
+        to specify a different kind of interpolation on each interval, if needed.
+        eps is the relative precision on the computation of the functions used in the algorithm.
+        
+        If di is None, pchip derivatives are computed here, otherwise it should
+        provide the pchip derivatives of the interpolation.
+        
+        We use Filon's type method on each interval, plus an asymptotic method for the correcting term toward infinity if flaginf=1.
+    
+
+    fourier_integral_asympt_correction(flaginf, tscan, omegai_end, fi_end, df_end=0.0)
+        correcting term for the semi-infinite Fourier integral at tscan of the
+        function f, above (if flaginf>0) or below (if flaginf<0) omegai_end.
+        fi_end is the value of f at omegai_end, df_end it's derivative (can be zero).
+        tscan can be a scalar or a list (or array). Result is always an array (with a single 
+        element if tscan is a scalar).
+    
+
+    fourier_integral_linear_sampling(tscan, omegai, fi, df=0.0, interp=0, flaginf=1)
+        compute semi-infinite Fourier integral from omegai[0] to omegai[-1]
+        (or +/- infinity if flaginf is True) of a function f, i.e. the integral 
+        of f(omega)*exp(j*omega*t) for any t in tscan (table) and for f given by 
+        its interpolation table fi of type 'interp' at the points omegai 
+        (0 for cubic spline interpolation, 1 for linear interpolation). In general
+        f is complex.
+        
+        if flaginf is non-zero, a correcting term is added (at each t) to take into
+        account the semi-infinite integral above (if flaginf>0) or below (if flaginf<0)
+        the angular frequency range omegai. Then df gives the derivative of the function
+        at the point of the range closest to this semi-infinite integral. It can be zero.
+        
+        For this function interp cannot be a table (only one kind of interpolation
+        over the full range).
+        In this version tscan and omegai should be made of equidistant points and 
+        with a certain relation between them to allow the computation by a DFT.
+        If they are not, such meshes are anyway constructed by the function
+        'reinterpolate_linear_sampling' just above.
+        
+        We use Filon's type method on each interval; computation based on the algorithm
+        found in Numerical Recipes in C (2nd ed, chap. 13, p. 586) plus an
+        asymptotic method for the correcting term toward infinity if flaginf=1.
+    
+
+    fourier_integral_linear_sampling_naive(tscan, omegai, fi, df=0.0, flaginf=1)
+        compute semi-infinite Fourier integral from omegai[0] to omegai[-1]
+        (or +/- infinity if flaginf is True) of a function f, i.e. the integral 
+        of f(omega)*exp(j*omega*t) for any t in tscan (table) and for f given by 
+        its interpolation table fi at the points omegai. In general f is complex.
+        
+        if flaginf is non-zero, a correcting term is added (at each t) to take into
+        account the semi-infinite integral above (if flaginf>0) or below (if flaginf<0)
+        the angular frequency range omegai. Then df gives the derivative of the function
+        at the point of the range closest to this semi-infinite integral. It can be zero.
+        
+        In this version tscan and omegai should be made of equidistant points and 
+        with a certain relation between them to allow the computation by a DFT.
+        If they are not, such meshes are anyway constructed by the function
+        'reinterpolate_linear_sampling' just above.
+        
+        Here we use a "naive" FFT algorithm, that is generally BAD - see 
+        Numerical Recipes in C (2nd ed, chap. 13, p. 585). It is described in this 
+        reference and also in N. Mounet PhD thesis (EPFL 5305), p. 46.
+    
+
+    int_Simpson(a, b, fi)
+        integrate a function given by its values in 3 points (in table fi),
+        between a and b, with a simple Simpson's rule (source: Wikipedia).
+        The 3 points where f is given must be a, (a+b)/2 and b.
+    
+    
+    reinterpolate_linear_sampling(tscan, omegai, fi, interp_type='linear')
+        Make tscan and omegai be equidistant meshes with some correspondance
+        (for DFT purposes).
+        deltaomega is based on the difference between the 2 first points of the 
+        initial mesh (then keep the same beginning and end of the initial omegai range),
+        while deltat is fixed to allow DFT computation:
+        deltat= 2*pi/((n-1)*deltaomega) )
+        where n is defined as 4*len(omegainew) (~ arbitrary, from "Numerical Recipes in C", 
+        2nd ed, chap. 13, p 586).
+        tscan is then changed according to this deltat and such that the last
+        point of the scan must be tscan[0]+2.*np.pi/deltaomega.
+        
+        fi is re-interpolated on the new mesh, based on interpolation scheme in 
+        interp_type ('linear', 'cubic', etc.). NOTE: 'cubic' is very slow.
+        
+        Then compute the interpolation table of the function g defined by:
+        g(i)=f(omegai)*exp(1j*deltaomega*i*tscan[0])
+    
+
+
+#################################################################################
+#    io_lib 									#
+# library with in/out routines (read, write files)				#
+#################################################################################
+
+
+FILE
+    io_lib.py
+
+FUNCTIONS
+    find_string_in_file(filename, strin)
+        look for first line containing 'strin' in the file of name 'filename'
+        return its line number (first line has number zero)
+    
+    list_files(files, flagprint=False)
+        list the files to be read. "files" is a list of names that can contain regular expressions
+        (like *, etc.) from which the list of files to be analysed is constructed
+    
+    read_file_singleline(filename, numline=1)
+        read data of the file (actually take 
+        only one line, the one of number numline - starting from zero)
+    
+    read_ncol_file(filename, ignored_rows=0, ignored_cols=0, delimiter=None)
+        read a file in columns separated by spaces or tab (if 'delimiter' is None) or
+        by any kind of delimiter specified in 'delimiter', ignoring a certain
+        number of initial rows and columns
+        it stops as soon as it cannot split a line into floats, or if a line is empty
+    
+    read_ncol_file_identify_header(filename, colheader, dispflag=True)
+        read file organized in columns with a header line, and extract the column
+        which has [colheader] as header (or starts with it).
+        if dispflag is True, print warning when there is no such column
+    
+    test_and_create_dir(name)
+        test if a directory of name 'name' exists in the current directory,
+        and if not, create it
+    
+    write_Timber(t, data, filename, varname)
+        Write in "filename" the data in "data", vs time "t" (in s), in a Timber-like way
+        The variable name is "varname".
+    
+    write_ncol_file(filename, data, header=None, delimiter='\t', format='%15.10e')
+        write from the 2D array "data" a file in columns separated by 'delimiter',
+        with the first line given by "header"
+        format is the data format to use when writing (e.g. %lf, %d, etc.)
+
+
+#################################################################################
+#    parser_lib 									#
+# library with parser routines (for command line options)			#
+#################################################################################
+
+FILE
+    parser_lib.py
+
+FUNCTIONS
+    bunch_parse(option, opt_str, value, parser)
+        special bunch numbers parser (parse things like -b 1 -b 5 -b 7:9 -b 12:18:2)
+    
+    multifloatint_parse(option, opt_str, value, parser)
+        parse an option (variable number of float or integer inputs)
+    
+    multistring_parse(option, opt_str, value, parser)
+        parse an option (variable number of string inputs)
+
+
+#################################################################################
+#    plot_lib 									#
+# library with plotting routines						#
+#################################################################################
+
+
+FILE
+    plot_lib.py
+
+FUNCTIONS
+    build_colors(ncol, randomize=False)
+        define ncol different colors (rgb format, for plots).
+        If randomize==True, they are randomized (always in the same way, random permutation is hard-coded)
+    
+    cmap(kys)
+        define a color map
+    
+    end_figure(fig, ax, save=None, legpos=0, fontsize=30, grid=True, legfontsize=None)
+        finalize a figure fig and its axes ax, to make it look 'nice'.
+        Optional arguments:
+        - save: if not None, should contain the name of the file where to save the plots
+        (then it does not print on the screen but save in files [save].png and [save].eps).
+        Otherwise plots are simply printed on screen,
+        - legpos: position of the legend: from matplotlib help:
+            best position   0
+            upper right     1
+            upper left      2
+            lower left      3
+            lower right     4
+            right           5
+            center left     6
+            center right    7
+            lower center    8
+            upper center    9
+            center          10
+        It can also be a tuple with the coordinates of the up-left corner of the legend box.
+        - fontsize: general fontsize of all texts in the plots. If legfontsize is None,
+        legend text is with a fontsize equal to 'fontsize-2*(number of legends)' (but not less than 10),
+        - grid: True or False to switch on/off the grid,
+        - legfontsize: fontsize of legend text. Overrides the rule above if not None.
+    
+    fillplot_percent(x, y1, y2, lab, leg, col, ax)
+        fill plot of percentages between y1 and y2, with x-label in 'lab', legend 
+        label in 'leg', and color 'col'.
+        ax are the axes to plot on.
+    
+    init_figure(axes=None, figsize=(16, 12))
+        initialize a figure and its axes
+        optional arguments:
+        - figsize: total figure size
+        - axes: for instance [0.15,0.15,0.8,0.8]: values between 0 and 1,
+        in units of the total figure size: x & y coordinates of bottom left coorner,
+        then horizontal and vertical sizes
+    
+    make_movie(filename, rootname, flagrm=True)
+        make a movie (animated gif) from files rootname*.png
+        The movie is entitled filename 
+        If flgrm==True, rm all files rootname*.png and rootname*.eps afterwards
+    
+    plot(x, data, leg, patcol, ylab, ax, logflag, lw=3.0, xlab='Number of turns', plotevery=1, colr=None, ms=10.0)
+        plotting function.
+        Arguments (the first 7 ones are mandatory, the others are optional):
+        - x: x data,
+        - data: y data,
+        - leg: label for the legend,
+        - patcol: pattern and/or color for the curve (e.g. '--xb'),
+        - ylab: label for the y-axis,
+        - ax: axes on which to plot (from e.g. init_figure),
+        - logflag: 0 for linear plot, 1 for logarithmic plot in x / linear in y,
+        2 for logarithmic plot in y / linear in x, 3 for log-log plots,
+        - lw: linewidth of the curve,
+        - xlab: label for the x-axis,
+        - plotevery: plot every "plotevery" points,
+        - colr: re-define the color of the curve (rgb format for instance)  ,
+        - ms: size of the markers (crosses, circles, or other), if present.
+    
+    plot2D(data, nxmin, nxmax, nymin, nymax, xlab, ylab, tit, ax, colorlabel=None, colorlim=None, fig=None)
+        2D color plot of data between nxmin, nxmax, nymin, nymax.
+        xlab and ylab are the axes labels, tit the title,
+        ax the axes to do the plot on.
+        
+        NOTE: data is of the format [iy,ix] (i.e. y axis in first dimension)
+        
+        if colorlabel or colorlim is not None, the color scale is shown.
+        colorlabel is a label to be put next to the color scale, colorlim a list
+        with 2 floats giving the limits of the scale (if None it is automatic).
+    
+    plot_save_hist(x, data, leg, ax, fig, i, xlim=None, ylim=None, tit='', ylab='Bunch position', legposition='lower right', xlab='25ns-slot number')
+        plot and save the histogram of data vs. x (save in '_tmp'+str(i)+'.png' and '_tmp'+str(i)+'.eps')
+        - leg: label for the legend,
+        - ax: axes where to plot,
+        - fig: figure objectto which ax belongs,
+        - i: integer to be put in the filename, 
+        - xlim: 2 numbers with x-axis limits (default=automatic),
+        - ylim: 2 numbers with y-axis limits (default=automatic),
+        - tit: title of the graph,
+        - ylab: label for the y-axis,
+        - legposition: position of the legend (see function end_figure),
+        - xlab: label for the x-axis.
+    
+    scix(ax)
+        transform horizontal tick labels from axes ax, into scientific notation (e.g. 1.5 10^-4)
+        unless they are between 0.01 & 100 (in abs. value)
+    
+    sciy(ax)
+        transform vertical tick labels from axes ax, into scientific notation (e.g. 1.5 10^-4)
+        unless they are between 0.01 & 100 (in abs. value)
+    
+    set_fontsize(obj, size)
+        set all fontsize to 'size' in the (pylab) object 'obj' (can be figure, axes, legend labels...)
+    
+    set_legend_fontsize(fig, ax, font='xx-large')
+        puts a legend in axes 'ax' of figure 'fig', with fontsize 'font'
+
+
+#################################################################################
+#    solve_lib									#
+# library to try to find all roots of complex functions in the complex plane 	#
+# (in a given region)								#
+#################################################################################
+
+# Note: there is a test inside this module - you can run it by typing in a terminal
+./solve_lib.py
+
+FILE
+    solve_lib.py
+
+FUNCTIONS
+    eqplane(A, B, C)
+        Find the equation of a plane from the coordinates of 3 points A, B and C
+        in 3D. Outputs are the 4 coefficients a,b,c,d such that the equation of 
+        the plane is ax+by+cz=d for points of coordinates (x,y,z)
+    
+    intersect_two_planes_z0(p1, p2)
+        Given 2 equations of planes in 3D p1 and p2 (each being an array of 4 
+        coefficents a,b,c,d such that eq. is ax+by+cz=d), find their intersection
+        with the plane z=0 (if it's a single point, otherwise return inf if no
+        such intersection can exist, or nan if it's more than a single point)
+    
+    maketrans(...)
+        maketrans(frm, to) -> string
+        
+        Return a translation table (a string of 256 bytes long)
+        suitable for use in string.translate.  The strings frm and to
+        must be of the same length.
+    
+    potential_roots_complex(f, real_min, real_max, imag_min, imag_max, npts=1000, meshkind='lin', offset_log=0.0)
+        Find the potential roots in the complex plane of a function f (from C to C),
+        inside the square of the complex plane delimited by real_min / real_max for the
+        real part, and imag_min / imag_max for the imaginary part.
+        "potential roots" mean roots of the linear interpolation of the function
+        over a grid defined on this region, with npts points in each dimension.
+        meshkind: indicates the kind of mesh, which can be can be either 'lin' 
+        (equidistant mesh) or 'log' (logarithmic mesh w.r.t. a constant offset given 
+        in offset_log - complex number).
+        f must take a complex argument and returns also a complex.
+        Outputs a list of potential roots.
+    
+    roots_complex(f, real_min, real_max, imag_min, imag_max, npts=1000, meshkind='lin', tolf=1e-12, tolx=1e-14)
+        function wrapping the two previous functions
+    
+    roots_complex_list(f, list_pot_roots, tolf=1e-12, tolx=1e-14)
+        Find the roots in the complex plane of a function f (from C to C),
+        taking as initial estimates the 'potential roots' in list_pot_roots.
+        f must take a complex argument and returns also a complex.
+        Outputs a list of roots.
+        tolf and tolx are the tolerances for resp. the function value and
+        the minimum acceptable difference between 2 roots.
+
+
+#################################################################################
+#    string_lib 								#
+# library with string manipulation routines					#
+#################################################################################
+
+FILE
+    string_lib.py
+
+FUNCTIONS
+    find_ind_names(namesref, names)
+        given 2 lists of strings namesref and names, find the indices ind
+        such that names[ind]=namesref
+        '=' means here that the longest of the two strings begins
+        with the smallest.
+    
+    float_to_str(f)
+        convert a float into a string, replacing  '.' by 'p',
+        and taking care of useless '0'
+    
+    fortran_str(numb)
+        convert a float to a Fortran-like string (with 'D' instead of 'e')
+    
+    get_nice_string(listin)
+        to output a string from a list (for printing purposes)
+    
+    invert_selection(namestot, namespart)
+        select all names in namestot (list of strings) that are not in namespart
+    
+    split_and_takeout_spaces(name)
+        split (according to spaces) and take out spaces from a string
+        return a list with each "words"
+    
+    takeout_common(listname, flagcommon=False, nslash=2)
+        Takes out all the "words" that are common to all the
+        names in listname:
+        "words" are defined as being between two underscores "_" (or 
+        between the beginning and a underscore, or an underscore and the end).
+        Gives in output a new list of names without those common words.
+        
+        Note: if there are "/"  characters, we take into account only the part
+        of the name that is between the nslash-1 and nslash ones (counting from
+        the end)
+        for instance if a name is "blabla/toto/LHC_36b_csi4/data_prt.dat"
+        and nslash=2, we take only "LHC_36b_csi4"
+        
+        if flagcommon=True, also output the common part of all names
+    
+    takeout_spaces(listname)
+        take out most of the spaces in each term of a list of strings
+        (obtained from the 'takeout_common' routine)
+
+
+#################################################################################
+#    tables_lib									#
+# library with tables and lists manipulation routines				#
+#################################################################################
+
+FILE
+    tables_lib.py
+
+FUNCTIONS
+    add_element_in_array(table, i, elem)
+        intercalate one element after place i in the array table.
+        It means that elem takes the place at the index i+1 (between the previously i and 
+        i+1 elements of table) and that the right part of table is shifted to 
+        the right by one unit.
+        Note that it also works with i=-1 (elem inserted at the beginning of the table)
+        or with i=len(table)-1 (insertion at the end).
+    
+    add_line_in_2d_array(table, i, line)
+        intercalate one line after line i in the 2D array table.
+        It means that e'line' takes the place at the index i+1 (between the previously i and 
+        i+1 lines of table) and that the bottom part of table is shifted to 
+        the down by one unit.
+        Note that it also works with i=-1 (eline inserted at the beginning of the table)
+        or with i=len(table[:,0])-1 (insertion at the end).
+    
+    complementary(tab1, tab2)
+        select the complementary of tab1 in tab2 (i.e. those in tab2 but not in tab1)
+    
+    count_between(xdata, ydata, ythreshold, xmin, xmax)
+        count the number of data points in array 'ydata' above 'ythreshold' and such
+        that their corresponding absissae in 'xdata' are between 'xmin' and 'xmax'.
+    
+    create_list(a, n=1)
+        if a is a scalar, return a list containing n times the element a
+        otherwise return a
+    
+    create_list_for_figure(a, n=1)
+        same as create_list but done differently, with a test on the length
+        (because the one above fails for objects like axes and figures)
+        also, no "deepcopy" (means that if all elements are duplicate, 
+        any change affecting one of them will affect the others)
+    
+    diff(data1, data2)
+        compare two sets of data
+    
+    diffshape(data1, data2)
+        compare shape of two sets of data
+    
+    intersect(tab1, tab2)
+        build array that is the intersection between two 1D arrays tab1 and tab2
+    
+    max_diff_abs_complex_array(tab1, tab2, criterion='abs')
+        maximum and index of the maximum of the difference between 2 complex
+        arrays 'tab1' and 'tab2', in absolute, according to 
+        'criterion' that can be:
+        - 'abs' -> maximum in absolute value,
+        - 'real' -> maximum for the real part only,
+        - 'imag' -> maximum for the imaginary part only,
+        - 'realimag' -> maximum for both real and imaginary parts.
+    
+    max_diff_rel_complex_array(tab1, tab2, criterion='abs')
+        maximum and index of the maximum of the difference between 2 complex
+        arrays 'tab1' and 'tab2', in relative w.r.t. 'tab1', according to 
+        'criterion' that can be:
+        - 'abs' -> maximum in absolute value,
+        - 'real' -> maximum for the real part only,
+        - 'imag' -> maximum for the imaginary part only,
+        - 'realimag' -> maximum for both real and imaginary parts.
+    
+    select_and_average(data, select_table, select_value, flagmax=False, flagvar=False)
+        select in list 'data' the values according to indices such that select_table(indices)=select_value
+        then take out nan and compute average along the data lines.
+        number of elements in list 'data' should be the same as number of elements of array 'select_table'
+        
+        if flagmax=True, also compute the maximum of the absolute value (along the lines)
+        if flagvar=True, also compute the standard deviation (along the lines)
+    
+    select_in_table(selection, table)
+        find indices ind of elements in table such that
+        table[ind]=selection
+    
+    sort_and_delete_duplicates(tab, tolerance=1e-08)
+        sort a table in ascending order and delete its duplicates
+        tolerance is the relative tolerance accepted between 2 numbers (if their 
+        difference is lower than that, in relative, they are considered equal)
+
+
+

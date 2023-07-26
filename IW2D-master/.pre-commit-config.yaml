@@ -1,0 +1,17 @@
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v4.3.0
+  hooks:
+  - id: end-of-file-fixer # checks that all files end in a newline
+  - id: check-added-large-files # prevents files over 500kb from being added
+- repo: https://github.com/pre-commit/mirrors-mypy
+  rev: v0.982
+  hooks: 
+  - id: mypy # static type checker
+
+exclude: |
+  (?x)(
+    ^PYTHON_codes_and_scripts/|
+    ^IW2D/cpp/plot|
+    ^IW2D.egg-info
+  )

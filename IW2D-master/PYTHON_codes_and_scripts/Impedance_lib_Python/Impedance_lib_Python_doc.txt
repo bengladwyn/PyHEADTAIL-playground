@@ -1,0 +1,886 @@
+#########################################################################################
+#########################################################################################
+#											#
+#	Some basic info on functions in the modules in 'Impedance_lib_Python'		#
+#											#
+#########################################################################################
+#########################################################################################
+
+
+#################################################################################
+#    Impedance									#
+# library for computation of impedance & wake models				#
+#################################################################################
+
+FILE
+    Impedance.py
+
+CLASSES
+    
+    class freq_param(__builtin__.object)
+     |  class for definition of frequency sampling (all in Hz)
+     |  
+     |  Methods defined here:
+     |  
+     |  __init__(self, fmin=10, fmax=10000000000000.0, ftypescan=2, fsamplin=100000000.0, nflog=20, fminrefine=100000000000.0, fmaxrefine=5000000000000.0, nrefine=5000, fadded=[0.01, 0.1, 1, 1000000000000000.0])
+     |  
+    
+    class impedance_wake(__builtin__.object)
+     |  class for impedance or wake fucntion model (impedances components vs. frequency,
+     |  or wake function vs. distance z)
+     |  
+     |  Methods defined here:
+     |  
+     |  __init__(self, a=1, b=0, c=0, d=0, plane='x', var=array([  1.00000000e+01,   1.25892541e+01,   1.5...e+12,   7.94328235e+12,
+     |           1.00000000e+13]), func=array([ 0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  ...,  0.,  0.,  0.,  0.,
+     |          0.,  0.,  0.,  0.]))
+     |      all in SI units here.
+     |      
+     |      a,b,c,d are the powers the source and test coordinates in the force (or kick) due to impedance/wake
+     |      ex:
+     |       - a=b=c=d=0, plane ='z' : longitudinal constant impedance/wake
+     |       - a=b=c=d=0, plane ='x' : horizontal constant impedance/wake
+     |       - a=b=c=d=0, plane ='y' : vertical constant impedance/wake
+     |       - a=1, b=c=d=0, plane ='x' : horizontal dipolar impedance/wake
+     |       - b=1, a=c=d=0, plane ='y' : vertical dipolar impedance/wake
+     |       - c=1, a=b=d=0, plane ='x' : horizontal quadrupolar impedance/wake
+     |       - d=1, a=b=c=0, plane ='y' : vertical quadrupolar impedance/wake
+     |       - b=1, a=c=d=0, plane ='x' : horizontal dipolar coupled-term impedance/wake
+     |       - d=1, a=b=c=0, plane ='x' : horizontal quadrupolar coupled-term impedance/wake
+     |       - a=1, b=c=d=0, plane ='y' : vertical dipolar coupled-term impedance/wake
+     |       - c=1, a=b=d=0, plane ='y' : vertical quadrupolar coupled-term impedance/wake
+     |      etc...
+     |  
+    
+    class impedance_wake_input(__builtin__.object)
+     |  class for impedance/wake analytical computations with ImpedanceWake2D
+     |  
+     |  Methods defined here:
+     |  
+     |  __init__(self, machine='LHC', gamma=7460.52, length=1, b=[0.002], layers=[<Impedance.layer object>], fpar=<Impedance.freq_param object>, zpar=<Impedance.z_param object>, longfactor=100.0, waketol=1000000000000.0, freqlinbisect=100000000000.0, geometry='round', Yokoya=[1, 1, 1, 0, 0], comment='')
+     |      all in SI units here.
+     |      
+     |      geometry can be 'round' or 'flat'
+     |      
+     |      Yokoya factors are used only for round geometry, to transform it into another 
+     |      geometry (flat, elliptical or rectangular). Order: long., xdip, ydip, xquad, yquad.
+     |      
+     |      b is the radius (for round) or half-gap (for flat).
+     |      b can have one or two values: if two values and flat geometry, then top-bottom 
+     |      symmetry is 'no', and the first value is for the first upper layers, the second one 
+     |      for the first lower layer. Both values can still be equal.
+     |      If one of the values in b is zero, the corresponding part (upper or lower) is empty
+     |      (i.e. single plate case, like e.g. the LHC TCDQ).
+     |      
+     |      layers contain the layer properties (see above class 'layer'), first the
+     |      upper layers then the lower ones (in the flat case). The last upper layer
+     |      must be characterized   by an infinite thickness.
+     |      
+     |      longfactor: longitudinal factor, waketol: tolerance for wake calculation,
+     |      freqlinbisect: frequency above which the mesh bisecting is linear.
+     |  
+    
+    class layer(__builtin__.object)
+     |  class for definition of layer properties (for resistive-wall code)
+     |  
+     |  Methods defined here:
+     |  
+     |  __init__(self, rhoDC=5e-06, tau=4.2e-12, epsb=1, mur=1, fmu=inf, thickness=inf)
+     |  
+    
+    class z_param(__builtin__.object)
+     |  class for definition of z (distance) sampling (all in m)
+     |  
+     |  Methods defined here:
+     |  
+     |  __init__(self, zmin=0.01, zmax=1000000.0, ztypescan=2, nzlog=100, zminrefine=5e-06, zmaxrefine=0.01, zsamplin=5e-06, zadded=[])
+     |  
+
+FUNCTIONS
+
+    Al_layer(thickness=0.054)
+        define a layer of pure aluminum material
+        see N. Mounet PhD thesis for references.
+    
+    CFC_layer(thickness=0.025)
+        define a layer of CFC (carbon fiber-reinforced carbon), type Tatsuno AC150
+        see N. Mounet PhD thesis for references.
+    
+    Cu20K_layer(thickness=5e-05, RRR=70, B=8.327503357420252)
+        define a layer of pure copper material at 20K
+        with magnetoresistance taken into account (RRR=residual resistivity ratio,
+        B=magnetic field). Default B given here is for the LHC (2803.9 m radius of curvature) at 7TeV.
+        see N. Mounet PhD thesis for references.
+    
+    Cu300K_in_TDI_layer(thickness=1e-06)
+        define a layer of copper material, at room temperature, on top of the TDI jaw (most 
+        probably contaminated by other species, so more resistive - see some mesurements by S. Calatroni & W. Vollenberg)
+    
+    Cu300K_layer(thickness=0.002)
+        define a layer of pure copper material at room temperature
+        see N. Mounet PhD thesis for references.
+    
+    Cu50K_layer(thickness=5e-05, RRR=70, B=8.327503357420252)
+        define a layer of pure copper material at 50K
+        with magnetoresistance taken into account (RRR=residual resistivity ratio,
+        B=magnetic field). Default B given here is for the LHC (2803.9 m radius of curvature) at 7TeV.
+        We use Kohler's law (see E. Metral, HE-LHC'10, 15/10/2010).
+    
+    G_Stupakov(x, Gint)
+        computes F (when Gint=0) or G_[Gint] function from Stupakov's formulas 
+        for a rectangular linear taper at a given x=g/w ratio
+        x can be an array
+        See Phys. Rev. STAB 10, 094401 (2007)
+    
+    G_element(m, x, Gint)
+        computes each element of series defining F (when Gint=0) or G_[Gint] function
+        from Stupakov's formulas for a rectangular linear taper at a given x=g/w ratio
+        m is an array of integers where we compute those monomials
+        See Phys. Rev. STAB 10, 094401 (2007)
+    
+    MoC_layer(thickness=0.025)
+        define a layer of molybdenum-graphite material
+        see A. Bertarelli...
+    
+    Mo_layer(thickness=5e-05)
+        define a layer of pure molybdenum material
+        see A. Bertarelli...
+    
+    NEG_in_TDI_layer(rhoDC=6e-06, thickness=1e-06)
+        define a layer of NEG material at room temperature coated on top of a porous hBN layer
+        (lot of outgassing -> degrade electric properties, but not known by how much - cf. Sergio Calatroni)
+    
+    NEG_layer(thickness=1.5e-06)
+        define a layer of NEG material at room temperature
+    
+    Ti_in_TDI_layer(thickness=3e-06)
+        define a layer of titanium material as it is in the LHC TDI (coating on hBN)
+        see N. Mounet Evian 2011 paper for references.
+    
+    Ti_layer(thickness=3e-06)
+        define a layer of pure titanium material
+        see N. Mounet PhD thesis for references.
+    
+    W_layer(thickness=0.025)
+        define a layer of pure tungsten material
+        see N. Mounet PhD thesis for references.
+    
+    Yokoya_elliptic(small_semiaxis, large_semiaxis, Yokoyafilename=Yokoya_path+'/Yokoya_elliptic_from_Elias_USPAS.dat')
+        compute Yokoya factor for an elliptic shape (semiaxis given in input),
+        assuming the small axis is in the vertical direction.
+    
+    aC_layer(thickness=5e-07)
+        define a layer of amorphous carbon material,
+        relaxation time is changed accordingly (using parameters of CFC or graphite), proportionally to conductivity
+        see N. Mounet PhD thesis for references.
+    
+    add_impedance_wake(iw_model, iw_added, weightx, weighty)
+        add the model "iw_added" to an impedance or wake model in "iw_model".
+        both iw_added and iw_model are impedance or wake models, i.e. a list of objects from the class
+        impedance_wake. The two lists are not necessarily of same length, and the frequency/z scans
+        are not necessarily all the same.
+        weightx and weighty are resp. betax/avbetax and betay/avbetay (i.e. without the square root)
+        at the place of the added impedance "iw_added".
+        
+        It does this "in-place" (on iw_model itself)
+    
+    add_resonator_wake(R, fr, Q, wakefile, plane='x', save=None)
+        add a transverse wake function from a resonator model to a wake contained in the file 
+        named "wakefile" (without header, first column is tau in ns, transverse wake components
+        are in V/pC/mm)
+        Only dipolar component of plane 'plane' is affected (second or thrid column)
+        R=shunt impedance (Ohm/m), fr=resonant frequency, Q=quality factor
+        if 'save' different from None and is a string, write resulting wake
+        to a file with the name given by 'save'.
+    
+    apply_Yokoya_elliptic(iw_model, b, w, orientation='V')
+        apply Yokoya factors to a impedance or wake model
+        small semi-axis is b, large one w, and orientation 'H' (horizontal)
+        or 'V' (vertical) defined as the axis along which the semi-axis 'b' is.
+        NOTE: initial model is assumed to be "round", i.e. only longitudinal
+        and dipolar terms are taken into account (and xdip assumed to be equal to 
+        ydip). All other terms are ignored (in particular those of higher order).
+    
+    broadband_imp_taper_flat_Stupakov(a, b, tantheta, w, fcutoff, approx=True, listcomp=['Zlong', 'Zxdip', 'Zydip', 'Zxquad', 'Zyquad'])
+        computes R/Q (broad-band) in Ohm(/m if not long.) of one single rectangular 
+        linear taper using Stupakov's formulas (Phys. Rev. STAB 10, 094401 - 2007),
+        multiplied by Z0*c/(4*pi) to convert to SI units.
+        Taper is in the vertical plane.
+        parameters: small vertical half-gap a, large one b, slope of taper is tantheta=tan(theta),
+        half-width=w (constant over taper), fcutoff the cutoff frequency (used only
+        for the longitudinal component), approx=True if one assumes small b/w,
+        listcomp is a list with the names of the components for which ones computes the R/Q 
+        (ex: Zlong, Zydip, Zxquad, etc.), beta the relativistic velocity factor
+        
+        WARNING: we use here half apertures (half-gap and half-width) whereas
+        Stupakov's paper is expressed with full apertures. This does not make
+        any difference except for an additional factor 4 here for longitudinal
+        impedance.
+        
+        returns a list of R/Q for each component
+        
+        valid under the conditions of low frequency and length of taper much larger than
+        its transverse dimensions
+    
+    carbon_layer(rhoDC=1e-05, thickness=0.025)
+        define a layer of carbon material, with user-defined resistivity
+        relaxation time is changed accordingly (using parameters of CFC or graphite), proportionally to conductivity
+        see N. Mounet PhD thesis for references.
+    
+    construct_layers(layers, thickness=[], Bfield=0)
+        Construct list of layer ojects from a list of either layer object
+        OR material names (if material names then the corresponding 
+        thicknesses should be given). List elements can also be 'None' or None
+        (then no layer).
+        Bfield should be given in case of Cu20K (magnetoresistant).
+    
+    find_nmaterial(param_filename)
+        Find the number of materials in a parameter file.
+        This is the number of columns for which the header begins by "[mM]aterial"
+    
+    freqscan_from_fpar(fpar)
+        gives frequency scan associated with a freq_param object
+    
+    graphite_layer(thickness=0.025)
+        define a layer of graphite, type SGL R4550
+        see N. Mounet PhD thesis for references.
+    
+    hBN_layer(thickness=0.054)
+        define a layer of pure hBN material
+        see N. Mounet PhD thesis for references.
+    
+    hmm(m, omega, taub, modetype='sinusoidal')
+        compute hmm power spectrum of Sacherer formula, for azimuthal mode number m,
+        at angular frequency 'omega' (rad/s) (can be an arrray), for total bunch length
+        'taub' (s), and for a kind of mode specified by 'modetype'
+        (which can be 'Hermite' - leptons -  or 'sinusoidal' - protons).
+    
+    hmmsum(m, omega0, M, offk, taub, omegaksi, eps=1e-05, omegas=0.0, kmax=20, modetype='sinusoidal', Z=None, omegaZ=None, flagtrapz=False)
+        compute sum of hmm functions (defined above), weighted or not by the impedance Z 
+        (table of complex impedances in Ohm given from negative to positive angular frequencies
+        omegaZ in rad/s] If these are None, then only sum the hmm.
+        Use the trapz integration method if flagtrapz==True.
+        
+         - m: azimuthal mode number,
+         - omega0: angular revolution frequency in rad/s,
+         - M: number of bunches,
+         - offk: offset in k (typically nx+[Q] where nx is the coupled-bunch mode and [Q] 
+         the fractional part of the tune),
+         - taub: total bunch length in s,
+         - omegaksi: chromatic angular frequency,
+         - eps: relative precision of the sum,
+         - omegas: synchrotron frequency,
+         - kmax: step in k between sums,
+         - modetype: kind of mode for the hmm power spectrum ('sinusoidal', 'Hermite').
+        
+        In the end the sum runs over k with hmm taken at the angular frequencies
+        (offk+k*M)*omega0+m*omegas-omegaksi
+        but the impedance is taken at (offk+k*M)*omega0+m*omegas
+    
+    identify_component(compname)
+        identify a component from its name, and convert it to the impedance/wake class
+        format in terms  of a, b, c, d, plane and wakeflag (wakeflag=True if this is a 
+        wake component).
+        first letter of compname should be 'Z' (for impedance) or 'W' (for wake potential)
+        for e.g. impedance, compname can be: Zl(ong), Zxd(ip), Zyd(ip), Zxq(uad), Zyq(uad), Zxyd(ip), Zyxd(ip),
+        Zxyq(uad), Zyxq(uad), Zxc(st), Zyc(st), or a name directly indicating a, b, c, d 
+        and the plane, in the form e.g. "Z1000x" (Zxdip in this case)
+        (for wakes, it is the same replacing 'Z' by 'W')
+    
+    imp_model_elliptic(iw_input, w, orientation='V', wake_calc=False, flagrm=True, lxplusbatch=None, queue='1nh', dire='')
+        small wrapper to compute wall impedance of an elliptic element
+        of smaller semi-axis iw_input.b, larger one w, and orientation 'H' (horizontal)
+        or 'V' (vertical) defined as the axis along which the semi-axis 'b' is.
+        see other parameters in function imp_model_from_IW2D
+        use round chamber theory (ImpedanceWake2D) + Yokoya factors
+        dire contains the directory name where to put the outputs (default='./'=directory of IW2D)
+    
+    imp_model_from_HOMfile(filename, beta=1, fpar=<Impedance.freq_param object>, zpar=<Impedance.z_param object>)
+        Create an impedance or wake model from a file containing HOMs (high
+        order modes) data, i.e. resonator models data. Impedance / wake is in 
+        the end of sum of all those modes.
+        In the file each line is one mode, and each column should have a header indicating:
+        - Rl: longitudinal shunt impedance
+        - Rxd(ip): horizontal dipolar impedance shunt impedance
+        - same with Ryd(ip), Rxq(uad), Ryq(uad)
+        - same with Ql, Qxd(ip), etc. for each quality factor
+        - same with fl, fxd(ip), etc. for each resonance frequency.
+        beta indicates the relativistic velocity factor.
+    
+    imp_model_from_IW2D(iw_input, wake_calc=False, path=IW2D_path, flagrm=True, lxplusbatch=None, queue='1nh', dire='')
+        create an impedance model (without beta functions weight) from an ImpedanceWake2D (IW2D) computation.
+        input parameters are in iw_input (object of the class impedance_wake_input).
+        if wakecalc=True, do a wake+imp calculation  (otherwise computes only imp.)
+        if flagrm=True, remove output files automatically
+        path contains the path to the ImpedaceWake2D executables.
+        lxplusbatch: if None, no use of lxplus batch system
+                       if 'launch' -> launch calculation on lxplus on queue 'queue'
+                       if 'retrieve' -> retrieve outputs
+        dire contains the directory name where to put the outputs (default='./'=directory of IW2D)
+        NOTE: input should be clearly identified by its 'comment'
+    
+    imp_model_from_file(filename, compname, ignored_rows=0, sign=1)
+        Create an impedance or wake model from a file containing an impedance
+        or wake function (typically from a simulation).
+        File has 'ignored_rows' header lines.
+        There should be one column with frequency [Hz] or distance [m] (first column)
+        then one or two columns with real and imaginary part of impedance or wake,
+        for the component given in 'compname' (component identification should respect 
+        the standard given in function "identify_component").
+        Type (wake or impedance) is detected from first letter (W or Z) of 'compname'
+        (but actually it plays no role here).
+        sign is the sign convention: 1 if keep the same sign as in the file,
+        -1 otherwise. (use -1 for GdFidl wakes for instance).
+    
+    imp_model_from_files(filenamelist, scan, value, compname, ignored_rows=0, sign=1)
+        Create an impedance or wake model from several files, each containing
+        an impedance or wake function (typically from simulations).
+        Each file has 'ignored_rows' header lines, and should have one column 
+        with frequency [Hz] or distance [m] (first column)
+        then one or two columns with real and imaginary part of impedance or wake,
+        for the component given in 'compname' (component identification should respect 
+        the standard given in function "identify_component").
+        The different files represent a scan given by 'scan' (e.g. a half-gap scan)
+        and we interpolate between them at the value 'value' (extrapolation is 
+        possible: we use the closest value in scan).
+        Type (wake or impedance) is detected from first letter (W or Z) of 'compname'
+        (but actually it plays no role here).
+        sign is the sign convention: 1 if keep the same sign as in the files,
+        -1 otherwise. (use -1 for GdFidl wakes for instance).
+    
+    imp_model_holes_Mostacci(Lh, Wh, T, b, d, eta, rhob, rhod, length, fpar=<Impedance.freq_param object>, zpar=<Impedance.z_param object>, fcutoff=5000000000.0, nb_holes_per_crosssection=8, Cm=1.0, Ce=1.0, beta=1.0)
+        define an impedance & wake model for rounded rectangular holes of length Lh and width Wh
+        in a round beam pipe of length 'length', inner radius b, thickness T and resistivity rhob,
+        itself inside a larger round pipe of radius d and resistivity rhod,
+        with the eta the fraction of the total surface covered by holes,
+        nb_holes_per_crosssection the number of "lines of holes", assuming
+        the holes are uniformly distributed (pessimistic), and with a cutoff
+        frequency for the impedance equal to fcutoff (default = LHC value for
+        an aperture of 18.4mm).
+        The frequency scan is defined by fpar, the distacne scan by zpar.
+        Cm and Ce are constants found from simulations, here taken as 1 (pessimistic).
+        From A. Mostacci PhD thesis + Kurennoy results (Part. Acc. 1995, vol. 50, p 167-175) 
+        for broadband (long. and transverse).
+        beta is the relativistic velocity factor
+        NOTE: real long. impedance due to power dissipated by the wave propagating
+        behind the holes is not taken into account in the long. wake (but is in the impedance)
+    
+    imp_model_longitudinal_resonator(R, fr, Q, beta=1, wake_calc=False, fpar=<Impedance.freq_param object>, zpar=<Impedance.z_param object>)
+        define an imp/wake model for a longtudinal resonator (SI units)
+        R, fr, Q: shunt impedance, resonance frequency and quality factor
+        beta: relativistic velocity factor (for z to tau conversion
+        if wake_calc==True, calculate wake also
+    
+    imp_model_resonator(Rlist, frlist, Qlist, beta=1, wake_calc=False, fpar=<Impedance.freq_param object>, zpar=<Impedance.z_param object>, listcomp=['Zxdip', 'Zydip'])
+        function doing the same as the two previous ones but in a more general way.
+        
+        listcomp contains the component list in the format defined by 'identify_component';
+        the model will contain a resonator with the same parameters for each component of the list.
+        The first letter (W or Z) of each component does not matter: wake computation
+        is determined by the wake_calc flag.
+        It includes the longitudinal case (if component begins by Zl or Wl).
+        
+        Rlist, frlist and Qlist can be scalar or lists (of the size of listcomp); if they are lists then 
+        each component will have a different R, fr and Q.
+        all units are SI.
+    
+    imp_model_striplineBPM_Ng(l, angle, b, Zc=50.0, beta=1, wake_calc=False, fpar=<Impedance.freq_param object>, zpar=<Impedance.z_param object>)
+        compute impedance and wake model from Ng formula as quoted in
+        Handbook of Accelerator Physics and Engr., sec 3.2 (Impedances and wakes functions)
+        (transverse and longitudinal)
+        
+        Note that the longitudinal wake is zero because it's expressed as delta function
+        in Ng's formulas (to be checked).
+        
+        - l = length of strips, angle = azimuthal angle over which each of them is seen,
+        - b = pipe radius (or half distance between strips),
+        - Zc = characterisitc impedance of transmission lines from strips (usually
+        50 Ohm)
+        - fpar / zpar:frequencies / distances over which to compute impedance /wake
+    
+    imp_model_transverse_resonator(R, fr, Q, beta=1, wake_calc=False, fpar=<Impedance.freq_param object>, zpar=<Impedance.z_param object>, plane='')
+        define an imp/wake model for a transverse resonator (SI units)
+        R, fr, Q: shunt impedance, resonance frequency and quality factor
+        beta: relativistic velocity factor (for z to tau conversion
+        if wake_calc==True, calculate wake also
+        assume axisymmetry (purely dipolar)
+        plane can be 'x' (only to dipolar x component), 'y' (only to dipolar y component), 
+        or '' (both x and y dipolar components)
+    
+    integral_Kurennoy(b, a, c)
+        computes integral from 0 to + infinity of
+        1 / ( (s+b^2)^(3/2)*(s+a^2)^(1/2)*(s+c^2)^(1/2) )
+        Assumes a>0, b>0 and c>0.
+    
+    integral_Kurennoy_num(b, a, c)
+        computes integral from 0 to + infinity of
+        1 / ( (s+b^2)^(3/2)*(s+a^2)^(1/2)*(s+c^2)^(1/2) )
+        Assumes a>0, b>0 and c>0.
+        This one does it numerically.
+    
+    integrand_Kurennoy(s, b, a, c)
+        computes 1 / ( (s+b^2)^(3/2)*(s+a^2)^(1/2)*(s+c^2)^(1/2) )
+        Assumes a>0, b>0 and c>0. s can be an array.
+    
+    integrand_Kurennoy2(u, b, a, c)
+        computes 1 / ( (1/u^2+a^2-b^2)^(1/2)*(1/u^2+c^2-b^2)^(1/2) )
+        Assumes a>0, b>0 and c>0. u can be an array.
+    
+    integrand_Stupakov(g, w, Gint, gpow)
+        computes integrand for Stupakov integral for a rectangular linear taper at a given
+        vertical half-gap(s) g (can be an array)
+        Note that (g')^2 has been taken out of the integral.
+        
+        w is the width of the taper.
+        Gint is the indice of the G function to use (0 is for G0=F in Stupakov's paper)
+        gpow is the power to which 1/g is taken
+        See Phys. Rev. STAB 10, 094401 (2007)
+    
+    longitudinal_broadband_half_ellipsoidal_protrusion_in_round_pipe_Kurennoy(Le, We, He, b, fr=5000000000.0)
+        compute longitudinal (broad-band) R/Q of a single small (w.r.t. wavelength) half-ellipsoid
+        obstacle of semi-axes Le (along longitudinal direction), We (azimuthal)
+        and He (radial - it's simply the height of the obstacle), protruding in a round beam pipe of radius b.
+        Assumes Le,We,He << b.
+        From S. Kurennoy, Phys. Rev. E 55 (3), pp. 3529-3532 (1997). In his notations Le=a, We=c, He=b, b=R.
+    
+    longitudinal_broadband_holes_in_round_pipe_Kurennoy(Lh, Wh, b, eta, fr=5000000000.0)
+        compute longitudinal (broad-band) R/Q of pumping holes in a round pipe,
+        per unit length in longitudinal (so in Ohm/m).
+        From Kurennoy's formula in Part. Acc. 1995, vol. 50, p 167-175
+        
+        Thanks to A. Mostacci, La Sapienza, Rome
+        
+        Lh: hole length, Wh: hole width,
+        b: pipe radius, eta: proportion of total surface covered by holes,
+        fr: cutoff frequency of broad-band resonator.
+    
+    longitudinal_broadband_single_hole_in_round_pipe_Kurennoy(Lh, Wh, b, fr=5000000000.0)
+        compute longitudinal (broad-band) R/Q of a single hole in a round pipe (in Ohm),
+        From Kurennoy's formula in Part. Acc. 1995, vol. 50, p 167-175
+        
+        Thanks to A. Mostacci, La Sapienza, Rome
+        
+        Lh: hole length, Wh: hole width, b: pipe radius,
+        fr: cutoff frequency of broad-band resonator.
+    
+    longitudinal_imp_holes_in_round_pipe_Mostacci(freq, Lh, Wh, T, b, d, eta, rhob, rhod, length, fcutoff=5000000000.0, nb_holes_per_crosssection=8, Cm=1.0, Ce=1.0)
+        computes the total (real + imag.) longitudinal impedance for holes
+        in a round beam pipe.
+        From A. Mostacci PhD thesis: take approximate formula for real part (eq. 1.35)
+        and first term of eq. 1.16 for imaginary part (same as Kurennoy's inductive impedance,
+        see Part. Acc. 1995, vol. 50, p 167-175).
+        
+        NOTE: real part of impedance not linear with length (due to interference between holes -> goes
+        as N^2 with N number of holes, up to the attenuation length - then it is linear) 
+        
+        freq: frequencies at which we compute impedance, Lh: hole length, Wh: hole width, 
+        T: pipe wall thickness, b: pipe inner radius, 
+        d: radius of outer shell (behind the pipe of radius b and thickness T),
+        eta: proportion of total surface covered by holes, rhob: conductivity of pipe wall,
+        rhod: conductivity of outer shell, length: length of the device,
+        nb_holes_per_crosssection: number of holes per cross-section of the device (default=value for LHC beam screen),
+        fcutoff: cutoff frequency (above-> zero impedance) (default = LHC one, for r=18.4mm aperture).
+        Cm and Ce are constants found from simulations, here taken as 1 (pessimistic).
+    
+    longitudinal_imp_striplineBPM_Ng(l, angle, freq, Zc=50)
+        compute longitudinal impedance from Ng formula as quoted in
+        Handbook of Accelerator Physics and Engr., sec 3.2 (Impedances and wakes functions)
+        
+        l = length of strips (=electrodes), angle = azimuthal angle over which each of them is seen
+        Zc = characterisitc impedance of transmission lines from strips (usually
+        50 Ohm) and freq the frequencies over which to compute impedance
+    
+    longitudinal_imp_taper_round_Yokoya(a, b, tantheta, fcutoff)
+        computes transverse R/Q (broad-band) in Ohm of one single round linear taper using 
+        Yokoya's formula (CERN SL/90-88)
+        parameters: small radius a, large one b, slope of taper is tantheta=tan(theta),
+        beam pipe cutoff frequency fcutoff and relativistic velocity factor beta.
+        
+        valid under the conditions (sigma_z = bunch length):
+            b tan(theta)/sigma_z << 1, and either a/sigma_z >>1 or (b-a)/a<<1
+        This is equivalent (with k=omega/c ~ 1/sigma_z at the main bunch spectrum frequency) to
+            kb tan(theta) << 1, and either ka >> 1 or (b-a)/a<<1
+    
+    maketrans(...)
+        maketrans(frm, to) -> string
+        
+        Return a translation table (a string of 256 bytes long)
+        suitable for use in string.translate.  The strings frm and to
+        must be of the same length.
+    
+    multiply_impedance_wake(iw_model, factor)
+        multiply all components of the model "iw_model" by the factor "factor"
+        It does this "in-place" (on iw_model itself)
+    
+    multiply_impedance_wake_file(iw_model, factor_filename)
+        multiply components of the model "iw_model" by the factors
+        (freq. or distance dependent) in the file "factor_filename"
+        headers of the file should provide info on the component to multiply
+        (see format in function 'identify_component') and real / imag. part
+        (at the end of headers: re or Re / im or Im)
+        NOTE: frequency or distance scan should be LARGER in the factor file than
+        in the imp. or wake model
+        
+        It does it "in-place" (on iw_model itself)
+    
+    plot_compare_imp_model(imp_mod_list, leglist, listcomp=['Zlong', 'Zxdip', 'Zydip'], figimp=None, aximp=None, figratio=None, axratio=None, saveimp='', saveratio='', xlim=[1000.0, 100000000000.0], ylim=[100000.0, 1000000000.0], ylim_ratio=None, yliml=[1, 1000000.0], bounds=[20000000.0, 2000000000.0], beta=1.0, legpos=0, plotpercent=False, legpercentpos=(0.8, 0.6), maxpercent=110.0, markimp=None)
+        plot on the same plot various impedance models provided in imp_mod_list
+        (list of impedance models, each of them being itself a list of components).
+        comparison is done for a set of components given in listcomp (see format in 
+        function 'identify_component' just above).
+        The impedance ratio is also plotted (w.r.t. to the first model in the list).
+        - if figimp /aximp (resp. figratio / axratio) are provided and not None,
+        imp. plots (resp. imp. ratio plots) are made on the corresponding axes 
+        (if they are lists of the length of listcomp, then each component is plotted 
+        on a separate plot).
+        otherwise figures and axes are created here and all components are plotted
+        separately.
+        - leglist is the list of legends (same length as imp_mod_list)
+        - if saveimp (resp. saveratio) is a string of non-zero length, save plot 
+        on this filename.
+        - xlim, ylim, ylim_ratio and yliml are the axes limits (only for impedance plot for ylim,
+        only for ratio plot for ylim_ratio - if None use [0,maximum ratio] - and only 
+        for longitudinal impedance for yliml)
+        - bounds are the frequencies between which we compute the maximum ratio;
+        they are converted to distances in the case of a wake (beta is used in 
+        that case, for the conversion)
+        - If plotpercent is True, we plot (on a single plot per component) the percentages
+        w.r.t to the first model given, in a "filled" manner (see N. Mounet PhD),
+        instead of curves
+        - legpercentpos: position (bbox_to_anchor) of legend for percentage plot.
+        - maxpercent: maximum of y-axis for the percentage plot (in percent).
+        - markimp: if not None, list of markers  (like 'x') for each curve of impedance plot 
+        (not used for ratio plot). Default is no marker.
+        
+        It also works for wakes, with component names beginning by "W" instead of "Z".
+        Then xlim and ylim have to be changed accordingly (e.g. resp. [1e-5,1e6] and [1e8,1e19] for LHC total wakes)
+    
+    polarizabilities_half_ellipsoidal_protrusion_Kurennoy(Le, We, He)
+        compute polarizabilities (electric and magnetic) of a single small (w.r.t. wavelength) half-ellipsoid
+        (obstacle) protruding in a round beam pipe, of semi-axes Le (along longitudinal direction), We (azimuthal)
+        and He (radial - it's simply the height of the obstacle).
+        Assumes Le,We,He << b (radius of beam pipe).
+        From S. Kurennoy, Phys. Rev. E 55 (3), pp. 3529-3532 (1997). In his notations Le=a, We=c and He=b.
+    
+    polarizabilities_hole_Mostacci(Lh, Wh, T, Cm=1.0, Ce=1.0)
+        compute polarizabilities (electric and magnetic) of small (w.r.t. wavelength) rounded
+        rectangular holes (i.e. rectangle with semi-circles at the ends of the largest sides)
+        in a thick pipe.
+        From A. Mostacci, PhD thesis, LHC project note 195, LHC project report 199
+        and Mathematica notebook: wwwslap.cern.ch/collective/mostacci/slots/note/slots.nb
+        
+        Lh: hole length, Wh: hole width, T: wall thickness,
+        Cm and Ce are constants found from simulations, here taken as 1 (pessimistic).
+    
+    power_loss(imp_mod, sigz, gamma, Nb, M, circum, powerspectrum='gaussian', particle='proton')
+        compute the power loss from the longitudinal impedance present in the impedance
+        model "imp_mod".
+         - sigz is the RMS bunch length in m (total length ~ 4*sigz),
+         - gamma: relativistic mass factor,
+         - Nb is the number of particles per bunch
+         - M is the number of bunches (assumed to be equidistant)
+         - circum is the circumference of the machine
+         - powerspectrum: type of line distribution:
+               'gaussian' or by default (if not present): Gaussian
+                   line distribution (in number of particles):
+                   lambda(omega)=Nb*exp(-omega^2*sigz^2/(2*c^2))
+                   or in z domain (in m^-1):
+                   lambda(z)=Nb/(sqrt(2*pi)*sigz)*exp(-z^2/(2*sigz^2))
+               'parabolic': parabolic line distribution
+               2-column table of numbers: any power spectrum defined by
+               amplitude^2 (second column) vs frequency (1st column) (note: THIS
+               IS NOT THE ANGULAR FREQUENCY)
+        
+        see Giovanni Rumolo's USPAS 2009 course : Collective Effects in the Longitudinal Plane
+    
+    power_spectrum(f, sigz, powerspectrum='gaussian')
+        compute the power-spectrum at a frequency f (which can be an array)
+        sigz is the RMS bunch length in m (total length ~ 4*sigz)
+        powerspectrum=type of line distribution:
+               'gaussian' or by default (if not present): Gaussian
+                  line distribution (in number of particles):
+                   lambda(omega)=Nb*exp(-omega^2*sigz^2/(2*c^2))
+                   or in z domain (in m^-1):
+                   lambda(z)=Nb/(sqrt(2*pi)*sigz)*exp(-z^2/(2*sigz^2))
+               'parabolic': parabolic line distribution
+               2-column table of numbers: any power spectrum defined by
+               amplitude^2 (second column) vs frequency (1st column) (note: THIS
+               IS NOT THE ANGULAR FREQUENCY)
+    
+    readZ(filename)
+        read impedance file (3 columns: frequency, real and imag. parts - there can be a header which is ignored)
+    
+    read_materials(param_filename, ind)
+        Read materials columns in a parameter file.
+        These are columns for which the header begins by "[mM]aterial"
+        ind is an array to re-order the materials extracted.
+    
+    resonator_impedance(R, fr, Q, freq, save=None)
+        resonator model impedance (transverse)
+        R=shunt impedance (Ohm/m), fr=resonant frequency, Q=quality factor
+        computes impedance at the frequencies freq (2 columns array)
+        if save different from None and contains a string, write imp. to this file name (3 columns)
+    
+    resonator_long_impedance(R, fr, Q, freq, save=None)
+        resonator model impedance (longitudinal)
+        R=shunt impedance (Ohm), fr=resonant frequency, Q=quality factor
+        computes impedance at the frequencies freq (2 columns array)
+        if save different from None and contains a string, write imp. to this file name (3 columns)
+    
+    resonator_long_wake(R, fr, Q, tau, save=None)
+        resonator model wake function (longitudinal)
+        R=shunt impedance (Ohm), fr=resonant frequency, Q=quality factor
+        computes wake at the times tau (in ns) (must be different from 0) (tau>0 behind the source)
+        NOTE: Q must be different from 0.5 !
+        if save different from None and contains a string, write wake to this file name (2 columns)
+    
+    resonator_long_wake_potential(R, fr, Q, sigmaz, z, beta=1)
+        resonator model wake potential (longitudinal) for a Gaussian bunch of line density
+        lambda_z=exp(-z^2/(2*sigz^2)) / (sqrt(2*pi)*sigz)
+        Formula from Chao's Handbook (p. 237, sec 3.2), partly re-derived by hand
+        R=shunt impedance (Ohm), fr=resonant frequency, Q=quality factor, sigmaz=rms bunch length
+        beta is the relativistic velocity factor
+        computes wake at the distances z (in m) (must be different from 0) (z>0 behind the source)
+        NOTE: Q must be different from 0.5 !
+        R, fr and Q can be scalar or lists of the same length (then add all resonators)
+    
+    resonator_wake(R, fr, Q, tau, save=None)
+        resonator model wake function (transverse)
+        R=shunt impedance (Ohm/m), fr=resonant frequency, Q=quality factor
+        computes wake at the times tau (in ns) (must be different from 0) (tau>0 behind the source)
+        NOTE: Q must be different from 0.5 !
+        if save different from None and contains a string, write wake to this file name (2 columns)
+    
+    resonator_wake_potential(R, fr, Q, sigmaz, z, beta=1)
+        resonator model wake potential (transverse) for a Gaussian bunch of line density
+        lambda_z=exp(-z^2/(2*sigz^2)) / (sqrt(2*pi)*sigz)
+        Formula from Chao's Handbook (p. 237, sec 3.2), re-derived by hand
+        R=shunt impedance (Ohm/m), fr=resonant frequency, Q=quality factor, sigmaz=rms bunch length
+        beta is the relativistic velocity factor
+        computes wake at the distances z (in m) (must be different from 0) (z>0 behind the source)
+        NOTE: Q must be different from 0.5 !
+        R, fr and Q can be scalar or lists of the same length (then add all resonators)
+    
+    rotate_imp_wake(iw_mod, theta)
+        Rotate in the transverse plane an impedance or wake model by the angle theta
+        Initial model is in iw_mod (list of impedance/wake objects from class impedance_wake),
+        given on the initial basis (x',y').
+        Output is an impedance/wake model (list of impedance_wake objects)
+        of the same element in the axes (x,y) rotated by theta such that
+        theta = angle between e_x and e_x' (counted positively anticlockwise
+        from x to x')
+        Note: for LHC collimators, theta=pi/2-alpha, with alpha the skew 
+        angle of LHC collimators.
+    
+    sacherer(imp_mod, Qpscan, nxscan, Nbscan, omegasscan, M, omega0, Q, gamma, eta, taub, mmax, particle='proton', modetype='sinusoidal', compname='Zxdip')
+        computes frequency shift and effective impedance from Sacherer formula, in transverse, in the case of low 
+        intensity perturbations (no mode coupling), for modes of kind 'modetype'.
+        It gives in output:
+         - tuneshift_most: tune shifts for the most unstable multibunch mode and synchrotron modes
+        sorted by ascending imaginary parts (most unstable synchrotron mode first).
+        Array of dimensions len(Qpscan)*len(Nbscan)*len(omegasscan)*(2*mmax+1)
+         - tuneshiftnx: tune shifts for all multibunch modes and synchrotron modes m.
+        Array of dimensions len(Qpscan)*len(nxscan)*len(Nbscan)*len(omegasscan)*(2*mmax+1)
+         - tuneshiftm0: tune shifts for the most unstable multibunch mode and synchrotron mode m=0.
+        Array of dimensions len(Qpscan)*len(Nbscan)*len(omegasscan)
+         - Zeff: effective impedance for different multibunch modes and synchrotron modes m.
+        Array of dimensions len(Qpscan)*len(nxscan)*len(omegasscan)*(2*mmax+1)
+        
+        Input parameters are similar to DELPHI's ones:
+         - imp_mod: impedance model (list of impedance-wake objects),
+         - Qpscan: scan in Q' (DeltaQ*p/Deltap),
+         - nxscan: scan in multibunch modes (from 0 to M-1),
+         - Nbscan: scan in number of particles per bunch,
+         - omegasscan: scan in synchrotron angular frequency (Qs*omega0),
+         - M: number of bunches,
+         - omega0: angular revolution frequency
+         - Q: transverse betatron tune (integer part + fractional part),
+         - gamma: relativistic mass factor,
+         - eta: slip factor (Elias's convention, i.e. oppostie to Joel Le Duff),
+         - taub: total bunch length in seconds,
+         - mmax: azimuthal modes considered are from -mmax to mmax,
+         - particle: 'proton' or 'electron',
+         - modetype: 'sinusoidal' or 'Hermite': kind of modes in effective impedance,'
+         - compname: component to extract from impedance model
+        
+         see Elias Metral's USPAS 2009 course : Bunched beams transverse coherent instabilities.
+    
+    ss304L_layer(thickness=inf)
+        define a layer of stainless steel material (304L) at room temperature
+        see N. Mounet PhD thesis for references.
+    
+    ssP506_20K_layer(thickness=inf)
+        define a layer of stainless steel material (P506) at 20K
+        see N. Mounet PhD thesis for references.
+    
+    test_impedance_wake_comp(iw, a, b, c, d, plane)
+        test if the impedance or wake in iw has these a,b,c,d and plane
+    
+    transverse_broadband_half_ellipsoidal_protrusion_in_round_pipe_Kurennoy(Le, We, He, b)
+        compute transverse (broad-band) R/Q of a single small (w.r.t. wavelength) half-ellipsoid
+        obstacle of semi-axes Le (along longitudinal direction), We (azimuthal)
+        and He (radial - it's simply the height of the obstacle), protruding in a round beam pipe of radius b.
+        Assumes Le,We,He << b.
+        From S. Kurennoy, Phys. Rev. E 55 (3), pp. 3529-3532 (1997). In his notations Le=a, We=c, He=b, b=R.
+    
+    transverse_broadband_holes_in_round_pipe_Kurennoy(Lh, Wh, b, eta)
+        compute transverse (broad-band) R/Q of holes in a round pipe, 
+        per unit length in longitudinal (so in Ohm/m^2).
+        From Kurennoy's formula in Part. Acc. 1995, vol. 50, p 167-175
+        Note: it is different from Gluckstern's formula (CERN SL/92-06 or 
+        Phys. ReV. A 46 (2), p. 1110-1115, 1992) by a factor 2.
+        
+        Thanks to A. Mostacci, La Sapienza, Rome
+        
+        Lh: hole length, Wh: hole width,
+        b: pipe radius, eta: proportion of total surface covered by holes.
+    
+    transverse_broadband_single_hole_in_round_pipe_Kurennoy(Lh, Wh, b)
+        compute transverse (broad-band) R/Q of a single hole in a round pipe (in Ohm/m).
+        From Kurennoy's formula in Part. Acc. 1995, vol. 50, p 167-175
+        We assume the hole is right in front of the beam azimuthally (cosine factor in Kurennoy's formula =1)
+        Note: it is different from Gluckstern's formula (CERN SL/92-06 or 
+        Phys. ReV. A 46 (2), p. 1110-1115, 1992) by a factor 2.
+        
+        Thanks to A. Mostacci, La Sapienza, Rome
+        
+        Lh: hole length, Wh: hole width, b: pipe radius.
+    
+    transverse_imp_striplineBPM_Ng(l, angle, b, freq, Zc=50)
+        compute transverse impedance from Ng formula as quoted in
+        Handbook of Accelerator Physics and Engr., sec 3.2 (Impedances and wakes functions)
+        
+        l = length of strips, angle = azimuthal angle over which each of them is seen,
+        b = pipe radius (or half distance between strips),
+        Zc = characterisitc impedance of transmission lines from strips (usually
+        50 Ohm) and freq the frequencies over which to compute impedance
+    
+    transverse_imp_taper_round_Yokoya(a, b, tantheta)
+        computes transverse R/Q (broad-band) in Ohm/m of one single round linear taper using 
+        Yokoya's formula (CERN SL/90-88)
+        parameters: small radius a, large one b, slope of taper is tantheta=tan(theta)
+        
+        valid under the conditions (sigma_z = bunch length):
+             b tan(theta)/sigma_z << 1, and either a/sigma_z >>1 or (b-a)/a<<1
+        This is equivalent (with k=omega/c ~ 1/sigma_z at the main bunch spectrum frequency) to
+             kb tan(theta) << 1, and either ka >> 1 or (b-a)/a<<1
+    
+    transverse_kick_factor(imp_mod, sigz, powerspectrum='gaussian', compname='Zxdip')
+        compute transverse kick factor for a certain RMS bunch length sigz and a certain powerspectrum:
+        gaussian, parabolic or user defined by an array with 2 columns: power spectrum vs frequency
+        (see function power_spectrum above)
+        see e.g. "Effect of transverse impedance on luminosity measurement", talk by E. Metral at the ICE meeting,
+        slide 3 (03/07/2013)
+        
+        It computes the kick factor only for the component 'compname' (identify_component format)
+    
+    transverse_wake_striplineBPM_Ng(l, angle, b, z, Zc=50)
+        compute transverse wake function from Ng formula as quoted in
+        Handbook of Accelerator Physics and Engr., sec 3.2 (Impedances and wakes functions)
+        
+        l = length of strips, angle = azimuthal angle over which each of them is seen,
+        b = pipe radius (or half distance between strips),
+        Zc = characterisitc impedance of transmission lines from strips (usually
+        50 Ohm) and freq the frequencies over which to compute impedance
+    
+    vacuum_layer(thickness=inf)
+        define a vacuum layer
+    
+    write_freq_param(file1, fpar)
+        write the frequency sampling parameters on file 'file1' (already opened)
+    
+    write_imp_wake_mod(imp_mod, name, listcomp=['Zxdip', 'Zydip'], dire='')
+        write files with components of an impedance or wake model given in imp_mod.
+        filenames will be: [component name][name].dat 
+        listcomp= components to be written (each in a separate file, with 3 columns:
+        frequency - or distance, real and imaginary parts)
+        dire is the directory where to put the files (do not forget the "/")
+    
+    write_impedance_wake_input(filename, iw_input)
+        write an input file for ImpedanceWake2D (impedance or wake calc.)
+        note that some lines might be useless (e.g. wake parameters for an impedance compuation)
+        but this does not matter (those lines won't be read by ImpedanceWake2D).
+        "iw_input" is an object of the class "impedance_wake_input".
+        writes into file of name "filename" .
+    
+    write_layer(file1, n, layer)
+        write the layer properties on the file (already opened) 'file1'
+        layer has number 'n' (can be negative)
+    
+    write_line(file1, sentence, value)
+        write in file 'file1' (already opened) a line with the string 'sentence'
+        followed by a tab and the number 'value'.
+        if value=inf, 'Infinity' is printed.
+    
+    write_wake_HEADTAIL(wake_mod, filename, beta=1, ncomp=6)
+        write a wake file, in the HEADTAIL format, from the wake model 'wake_mod'
+        reminder: units are ns and kV/pC(/m)
+        beta: relativistic beta factor (for unit conversion - m to ns)
+        ncomp= number of components to take (correspond to flag i_waketb in HEADTAIL input file)
+        NOTE: HEADTAIL assumes xy=yx for coupling terms; we also make this assumption here
+    
+    write_z_param(file1, zpar)
+        write the z sampling parameters on file 'file1' (already opened)
+    
+    zscan_from_zpar(zpar)
+        gives z (distance) scan associated with a z_param object
+
+
+
+#################################################################################
+#    other scripts (mainly for plotting purposes)				#
+#################################################################################
+
+# those are script intended to be used in command line, i.e. in a terminal type e.g.
+./compare_Imp_circ_flat -c Zlong_round.dat -f Zlong_flat.dat -l -v
+
+For all of them you can access an help with the command line options by typing
+./[script_name] -h
+Also, for all of them you have to specify the longitudinal files (impedance or wake),
+the others files (dipolar x&y, quadrupolar x&y, etc.) are seclected automatically.
+
+
+# short description of each script:
+    compare_Imp_circ_flat
+    	Script to plot a comparison between circular and flat chambers calculations (applying Yokoya
+	factors to the circular case).	
+    
+    plot_form_factors
+    	Script to plot form factors between circular and flat chambers calculations.
+
+    plot_percent_model
+    	Script to plot several impedances as percentages of a total model
+
+    plot_Imp_flat / plot_Wake_flat
+    	Scripts very similar to those in ../../ImpedanceWake2D, see user manual there.
+	The only difference is that they use the general plotting routines in
+	../General_Python_tools
+	Also, on can directly plot many files with e.g. -f "Zlong*.dat" (Don't forget the quotes) which can
+	select several files at a time
+
+#################################################################################
+#    some examples and tests							#
+#################################################################################
+
+# some examples of command lines used to run the scripts above are in
+
+some_tests_and_examples/commands_PhD_plots.txt
+
+#(note that the input data files are not present in this repository, so you cannot use those commands 'as is',
+#they are just examples)
+
+
+# an 'ipython' example to plot impedances (many components on same plot) obtained by the impedance library is in
+
+some_tests_and_examples/command_plot_dip_quad_on_same_plot.txt
+
+#(note here also that the input data files are not present in this repository, so you cannot use those commands 'as is')
+
+
+# an 'ipython' example of the use of the impedance library with a comparison with GdFidl outputs
+# can be found in 
+
+some_tests_and_examples/coll_geom_impedance_Stupakov_tests.py
+
+# (for this one, all inputs should be present, but there might be errors in the script)
+

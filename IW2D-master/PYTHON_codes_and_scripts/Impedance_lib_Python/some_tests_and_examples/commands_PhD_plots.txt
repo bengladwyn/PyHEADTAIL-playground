@@ -1,0 +1,209 @@
+########################################################################
+# commands used to generate N. Mounet PhD thesis plots (EPFL, no 5305)
+########################################################################
+
+################################
+# chap. 3
+################################
+
+cd /afs/cern.ch/user/n/nmounet/scratch0/Calculs_wakes_LHC
+
+############
+#Collimators
+############
+
+# CFC impedance (inj):
+#plot_Imp_flat.py -f flat/Coll_CFC/ZlongWLHC_2layersup_2layersdown4.00mm_coll_CFC_inj.dat -g "New flat chamber theory" -f cyl_yokoya/Coll_CFC/ZlongWLHC2layers4pmm_coll_CFC.dat -g "Zotter's round chamber theory with Yokoya factors" -f Burov_yokoya/Coll_CFC/ZlongWLHC_BL2layers4pmm_coll_CFC.dat -g "Burov-Lebedev round chamber theory with Yokoya factors" -f classic_yokoya/Coll_CFC/ZlongW_Cl_LHC2layers4pmm_coll_CFC.dat -g "Classic thick wall formula with Yokoya factors" -l
+
+# tungsten impedance (inj)
+#plot_Imp_flat.py -f flat/Coll_W/ZlongWLHC_2layersup_2layersdown6.00mm_coll_W_inj.dat -g "New flat chamber theory" -f cyl_yokoya/Coll_W/ZlongWLHC2layers6pmm_coll_W.dat -g "Zotter's round chamber theory with Yokoya factors" -f Burov_yokoya/Coll_W/ZlongWLHC_BL2layers6pmm_coll_w.dat -g "Burov-Lebedev round chamber theory with Yokoya factors" -f classic_yokoya/Coll_W/ZlongW_Cl_LHC2layers6pmm_coll_W.dat -g "Classic thick wall formula with Yokoya factors" -l
+
+# Ti-hBN impedance (inj)
+plot_Imp_flat.py -f flat/TDI/ZlongWLHC_3layersup_3layersdown4.00mm_TDI_eps4_precise.dat -g "New flat chamber theory" -f cyl_yokoya/TDI/ZlongWLHC_3layers4.00mm_TDI_hBN_precise.dat -g "Zotter's round chamber theory with Yokoya factors" -f Burov_yokoya/TDI/ZlongWLHC_BL2layers4pmm_coll_TDI_hBN.dat -g "Burov-Lebedev round chamber theory with Yokoya factors" -f classic_yokoya/TDI/ZlongW_Cl_LHC3layers4pmm_TDI_hBN.dat -g "Classic thick wall formula with Yokoya factors" -l
+
+# tungsten impedance (3.5TeV, 4mm)
+plot_Imp_flat.py -f flat/Coll_W/ZlongWLHC_2layersup_2layersdown4.00mm_coll_W_3p5TeV.dat -g "New flat chamber theory" -f cyl_yokoya/Coll_W/ZlongWLHC_2layers4.00mm_coll_W_3p5TeV.dat -g "Zotter's round chamber theory with Yokoya factors" -f Burov_yokoya/Coll_W/ZlongWLHC_BL2layers4mm_coll_w.dat -g "Burov-Lebedev round chamber theory with Yokoya factors" -f classic_yokoya/Coll_W/ZlongW_Cl_LHC2layers4pmm_coll_W.dat -g "Classic thick wall formula with Yokoya factors" -l
+
+# CFC impedance (3.5TeV, 1.5mm):
+plot_Imp_flat.py -f flat/Coll_CFC/ZlongWLHC_2layersup_2layersdown1.50mm_coll_CFC_3p5TeV_precise.dat -g "New flat chamber theory" -f cyl_yokoya/Coll_CFC/ZlongWLHC_2layers1.50mm_coll_CFC_3p5TeV_precise.dat -g "Zotter's round chamber theory with Yokoya factors" -f Burov_yokoya/Coll_CFC/ZlongWLHC_BL2layers1p5mm_coll_CFC.dat -g "Burov-Lebedev round chamber theory with Yokoya factors" -f classic_yokoya/Coll_CFC/ZlongW_Cl_LHC2layers1p5mm_coll_CFC.dat -g "Classic thick wall formula with Yokoya factors" -l
+
+
+
+# CFC wake (3.5TeV, 1.5mm):
+plot_Wake_flat.py -f flat/Coll_CFC/WlongWLHC_2layersup_2layersdown1.50mm_coll_CFC_3p5TeV_precise.dat -g "New flat chamber theory" -f cyl_yokoya/Coll_CFC/WlongWLHC_2layers1.50mm_coll_CFC_3p5TeV_precise.dat -g "Zotter's round chamber theory with Yokoya factors" -f classic_yokoya/Coll_CFC/WlongW_Cl_LHC2layers1p5mm_coll_CFC.dat -g "Classic thick wall formula with Yokoya factors" -l
+
+# Ti-hBN wake (inj)
+plot_Wake_flat.py -f flat/TDI/WlongWLHC_3layersup_3layersdown4.00mm_TDI_eps4_precise.dat -g "New flat chamber theory" -f cyl_yokoya/TDI/WlongWLHC_3layers4.00mm_TDI_hBN_precise.dat -g "Zotter's round chamber theory with Yokoya factors" -l
+
+
+
+# imp. form factors: tungsten (inj)
+plot_form_factors.py -f flat/Coll_W/ZlongWLHC_2layersup_2layersdown6.00mm_coll_W_inj.dat -c cyl_yokoya/Coll_W/ZlongWLHC2layers6pmm_coll_W_circ.dat -g "form factor from chap. 1 theories" -y -l -a
+
+# imp. form factors: Ti-hBN (inj)
+plot_form_factors.py -f flat/TDI/ZlongWLHC_3layersup_3layersdown4.00mm_TDI_eps4_precise.dat -c cyl_yokoya/TDI/ZlongWLHC_3layers4.00mm_TDI_hBN_circ_precise.dat -g "form factor from chap. 1 theories" -y -l -a
+
+# imp. form factors: tungsten (3.5TeV, 4mm)
+plot_form_factors.py -f flat/Coll_W/ZlongWLHC_2layersup_2layersdown4.00mm_coll_W_3p5TeV_precise.dat -c cyl_yokoya/Coll_W/ZlongWLHC_2layers4.00mm_coll_W_circ_3p5TeV_precise.dat -g "form factor from chap. 1 theories" -l -y -a
+
+# imp. form factors: CFC (3.5TeV, 1.5mm)
+plot_form_factors.py -f flat/Coll_CFC/ZlongWLHC_2layersup_2layersdown1.50mm_coll_CFC_3p5TeV_precise.dat -c cyl_yokoya/Coll_CFC/ZlongWLHC_2layers1.50mm_coll_CFC_circ_3p5TeV_precise.dat -g "form factor from chap. 1 theories" -y -l -a -r 0.5 0.97 -m -1.2 3.5
+
+# imp. form factors: TCDQ (3.5TeV, 6.5mm)
+plot_form_factors.py -f flat/Coll_TCDQ/ZlongWLHC_2layersup_0layersdown6.50mm_coll_TCDQ_3p5TeV_precise.dat -c cyl_yokoya/Coll_TCDQ/ZlongWLHC_2layers6.50mm_coll_TCDQ_3p5TeV_circ_precise.dat -g "form factor from chap. 1 theories" -b -a -m -0.5 1. -r 0.7 0.98
+
+
+# wake form factors: Ti-hBN (inj)
+plot_form_factors.py -f flat/TDI/WlongWLHC_3layersup_3layersdown4.00mm_TDI_eps4_precise.dat -c cyl_yokoya/TDI/WlongWLHC_3layers4.00mm_TDI_hBN_circ_precise.dat -g "form factor from chap. 1 theories" -y -a -r 0.6 0.85 -o -m 1e-2 2e3
+
+# wake form factors: tungsten (3.5TeV, 4mm)
+plot_form_factors.py -f flat/Coll_W/WlongWLHC_2layersup_2layersdown4.00mm_coll_W_3p5TeV_precise.dat -c cyl_yokoya/Coll_W/WlongWLHC_2layers4.00mm_coll_W_circ_3p5TeV_precise.dat -g "form factor from chap. 1 theories" -y -a -r 0.85 0.95
+
+# wake form factors: CFC (3.5TeV, 1.5mm)
+plot_form_factors.py -f flat/Coll_CFC/WlongWLHC_2layersup_2layersdown1.50mm_coll_CFC_3p5TeV_precise.dat -c cyl_yokoya/Coll_CFC/WlongWLHC_2layers1.50mm_coll_CFC_circ_3p5TeV.dat -g "form factor from chap. 1 theories" -y -a -r 0.95 0.55 -o -m 1e-3 30
+
+
+############
+#BS and warm pipe
+############
+
+# imp. BS 50A and warm pipe, 7TeV
+plot_Imp_flat.py -f cyl_yokoya/BS_50A/ZlongWLHC_2layers18.38mm_BS_50A_7TeV_precise.dat -g "Beam screen 50A, Zotter's theory with Yokoya factors" -f classic_yokoya/BS_50A/ZlongW_Cl_LHC2layers18p375mm_BS_50A_7TeV.dat -g "Beam screen 50A, Classic thick wall formula with Yokoya factors" -f cyl_yokoya/Warm_Pipe/ZlongWLHC_2layers40.00mm_WP_vac_7TeV_precise.dat -g "Warm pipe, Zotter's theory" -f classic_yokoya/Warm_Pipe/ZlongW_Cl_LHC2layers40pmm_WP_7TeV.dat -g "Warm pipe, Classic thick wall formula" -l -m
+
+# wake BS 50A and warm pipe, 7TeV
+plot_Wake_flat.py -f cyl_yokoya/BS_50A/WlongWLHC_2layers18.38mm_BS_50A_7TeV_precise.dat -g "Beam screen 50A, Zotter's theory with Yokoya factors" -f classic_yokoya/BS_50A/WlongW_Cl_LHC2layers18p375mm_BS_50A_7TeV.dat -g "Beam screen 50A, Classic thick wall formula with Yokoya factors" -f cyl_yokoya/Warm_Pipe/WlongWLHC_2layers40.00mm_WP_vac_7TeV_precise.dat -g "Warm pipe, Zotter's theory" -f classic_yokoya/Warm_Pipe/WlongW_Cl_LHC2layers40pmm_WP_7TeV.dat -g "Warm pipe, Classic thick wall formula" -l -m
+
+
+##########
+# full model
+##########
+
+cd full_model/
+
+#Zydip, inj
+plot_percent_model.py -t Zydip_Allthemachine_450GeV_B1.dat -f Zydip_WarmParts_450GeV_B1.dat -f Zydip_BeamScreens_450GeV_B1.dat -f Zydip_AllColl_450GeV_B1.dat -f Zydip_BroadBand_450GeV_B1.dat -g "Warm vacuum pipe" -g "Beam screens" -g "Collimators" -g "Broad-band model" -r 0.7 0.8 -r 0.7 0.6
+
+#Wydip, inj
+plot_percent_model.py -t Wydip_Allthemachine_450GeV_B1.dat -f Wydip_WarmParts_450GeV_B1.dat -f Wydip_BeamScreens_450GeV_B1.dat -f Wydip_AllColl_450GeV_B1.dat -f Wydip_BroadBand_450GeV_B1.dat -g "Warm vacuum pipe" -g "Beam screens" -g "Collimators" -g "Broad-band model" -r 0.4 0.8
+
+#Zydip, 3.5 TeV
+plot_percent_model.py -t Zydip_Allthemachine_3p5TeV_B1.dat -f Zydip_WarmParts_3p5TeV_B1.dat -f Zydip_BeamScreens_3p5TeV_B1.dat -f Zydip_AllColl_3p5TeV_B1.dat -f Zydip_BroadBand_3p5TeV_B1.dat -g "Warm vacuum pipe" -g "Beam screens" -g "Collimators" -g "Broad-band model" -r 0.7 0.8 -r 0.6 0.8
+
+#Wydip, 3.5 TeV
+plot_percent_model.py -t Wydip_Allthemachine_3p5TeV_B1.dat -f Wydip_WarmParts_3p5TeV_B1.dat -f Wydip_BeamScreens_3p5TeV_B1.dat -f Wydip_AllColl_3p5TeV_B1.dat -f Wydip_BroadBand_3p5TeV_B1.dat -g "Warm vacuum pipe" -g "Beam screens" -g "Collimators" -g "Broad-band model" -r 0.6 0.8
+
+#Zlong, 450 GeV
+plot_percent_model.py -t Zlong_Allthemachine_450GeV_B1.dat -f Zlong_WarmParts_450GeV_B1.dat -f Zlong_BeamScreens_450GeV_B1.dat -f Zlong_AllColl_450GeV_B1.dat -f Zlong_BroadBand_450GeV_B1.dat -g "Warm vacuum pipe" -g "Beam screens" -g "Collimators" -g "Broad-band model" -r 0.4 0.6 -r 0.96 0.9
+
+#Zlong, 3.5 TeV
+plot_percent_model.py -t Zlong_Allthemachine_3p5TeV_B1.dat -f Zlong_WarmParts_3p5TeV_B1.dat -f Zlong_BeamScreens_3p5TeV_B1.dat -f Zlong_AllColl_3p5TeV_B1.dat -f Zlong_BroadBand_3p5TeV_B1.dat -g "Warm vacuum pipe" -g "Beam screens" -g "Collimators" -g "Broad-band model" -r 0.7 0.5 -r 0.97 0.8
+
+
+## same with 2012 model (new TDI model, tight settings at 4 TeV)
+
+#Zyydip, inj
+plot_percent_model.py -t Zyydip_Allthemachine_450GeV_B1.dat -f Zyydip_WarmParts_450GeV_B1.dat -f Zyydip_BeamScreens_450GeV_B1.dat -f Zyydip_AllColl_450GeV_B1.dat -f Zyydip_BroadBand_450GeV_B1.dat -g "Warm vacuum pipe" -g "Beam screens" -g "Collimators" -g "Broad-band model" -r 0.7 0.8 -r 0.7 0.6
+
+#Zyydip, 4TeV
+plot_percent_model.py -t Zyydip_Allthemachine_4TeV_B1.dat -f Zyydip_WarmParts_4TeV_B1.dat -f Zyydip_BeamScreens_4TeV_B1.dat -f Zyydip_AllColl_4TeV_B1.dat -f Zyydip_BroadBand_4TeV_B1.dat -g "Warm vacuum pipe" -g "Beam screens" -g "Collimators" -g "Broad-band model" -r 0.7 0.8 -r 0.7 0.6
+
+# compare TCP, TCSG, TCT and TCL to the total impedance (2012)
+#Zyydip, 4TeV
+plot_percent_model.py -t Zyydip_Allthemachine_4TeV_B1.dat -f Zyydip_TCP_4TeV_B1.dat -f Zyydip_TCSG_4TeV_B1.dat -f Zyydip_TCT_4TeV_B1.dat -f Zyydip_TCLA_4TeV_B1.dat -f Zyydip_TCL._4TeV_B1.dat -f Zyydip_TCDQ_4TeV_B1.dat -g "TCP (CFC)" -g "TCSG (CFC)" -g "TCT (tungsten)" -g "TCLA (tungsten)" -g "TCL (copper)" -g "TCDQ (graphite)" -r 0.7 0.8 -r 0.7 0.6
+
+#Zxxdip, 4TeV
+plot_percent_model.py -t Zxxdip_Allthemachine_4TeV_B1.dat -f Zxxdip_TCP_4TeV_B1.dat -f Zxxdip_TCSG_4TeV_B1.dat -f Zxxdip_TCT_4TeV_B1.dat -f Zyydip_TCLA_4TeV_B1.dat -f Zxxdip_TCL._4TeV_B1.dat -f Zyydip_TCDQ_4TeV_B1.dat -g "TCP (CFC)" -g "TCSG (CFC)" -g "TCT (tungsten)" -g "TCLA (tungsten)" -g "TCL (copper)" -g "TCDQ (graphite)" -r 0.7 0.8 -r 0.7 0.6
+
+
+################################
+# chap. 4
+################################
+
+cd /media/b47b52a4-e1bb-4c0a-83cf-48aca3c6ec91/DATA_HEADTAIL/results_multikick/SPS_924b
+# SPS, average amplitude
+#read_Headtail_prt_fit.py -f SPS_924b_ntwake20_nkick1_nsl50_npr250000_csix-6.34_csiy-4.31/SPS_250000_prt.dat -f SPS_924b_ntwake20_nkick1_nsl50_npr250000_csix-3._csiy-3./SPS_250000_prt.dat -f SPS_924b_ntwake20_nkick1_nsl50_npr250000_csix-1._csiy-1./SPS_250000_prt.dat -f SPS_924b_ntwake20_nkick1_nsl50_npr250000_csix0._csiy0./SPS_250000_prt.dat -f SPS_924b_ntwake20_nkick1_nsl50_npr250000_csix1._csiy2.5/SPS_250000_prt.dat -f SPS_924b_ntwake20_nkick1_nsl50_npr250000_csix2.61_csiy5.23/SPS_250000_prt.dat -e "SPS, $Q''_x=-6.34$" -e "SPS, $Q''_x=-3$" -e "SPS, $Q''_x=-1$" -e "SPS, $Q''_x=0$" -e "SPS, $Q''_x=1$" -e "SPS, $Q''_x=2.61$" -v -a -g 1000 -p 2
+read_Headtail_prt_fit.py -f SPS_924b_ntwake20_nkick1_nsl50_npr250000_csix-3._csiy-3./SPS_250000_prt.dat -f SPS_924b_ntwake20_nkick1_nsl50_npr250000_csix0._csiy0./SPS_250000_prt.dat -f SPS_924b_ntwake20_nkick1_nsl50_npr250000_csix1._csiy2.5/SPS_250000_prt.dat -e "SPS, $ Q^'_x=-3$" -e "SPS, $ Q^'_x=0$" -e "SPS, $ Q^'_x=1$" -v -a -g 1000 -p 2
+
+# SPS, 2d FFT
+read_Headtail_prt_coupledbunch.py -f SPS_924b_ntwake20_nkick1_nsl50_npr250000_csix0._csiy0./SPS_250000_prt.dat -t 1000 4000 -d
+
+# SPS, hdtl for highest chroma, bunch 500 (y)
+read_Headtail_hdtl.py -f SPS_924b_ntwake20_nkick1_nsl50_npr250000_csix2.61_csiy5.23/SPS_250000_hdtl.dat -b 500
+
+# SPS, SVD for highest chroma
+read_Headtail_prt_coupledbunch.py -f SPS_924b_ntwake20_nkick1_nsl50_npr250000_csix2.61_csiy5.23/SPS_250000_prt.dat -s -t 1000 4500
+
+
+cd /media/b47b52a4-e1bb-4c0a-83cf-48aca3c6ec91/DATA_HEADTAIL/results_multikick/LHC_newmodel/LHC_1782b
+# LHC, average amplitude
+#read_Headtail_prt_fit.py -f LHC_1782b_ntwake20_nkick1_nsl20_npr80000_csi-2/LHC_80000_prt.dat -f LHC_1782b_ntwake20_nkick1_nsl20_npr80000_csi0/LHC_80000_prt.dat -f LHC_1782b_ntwake20_nkick1_nsl20_npr80000_csi2/LHC_80000_prt.dat -f LHC_1782b_ntwake20_nkick1_nsl20_npr80000_csi4/LHC_80000_prt.dat -e "LHC, $ Q^'_x=-2$" -e "LHC, $ Q^'_x=0$" -e "LHC, $ Q^'_x=2$" -e "LHC, $ Q^'_x=4$" -v -a
+read_Headtail_prt_fit.py -f LHC_1782b_ntwake20_nkick1_nsl20_npr80000_csi-2/LHC_80000_prt.dat -f LHC_1782b_ntwake20_nkick1_nsl20_npr80000_csi0/LHC_80000_prt.dat -f LHC_1782b_ntwake20_nkick1_nsl20_npr80000_csi2/LHC_80000_prt.dat -e "LHC, $ Q^'_x=-2$" -e "LHC, $ Q^'_x=0$" -e "LHC, $ Q^'_x=2$" -v -a -g 4000
+
+# LHC, 2d FFT
+read_Headtail_prt_coupledbunch.py -f LHC_1782b_ntwake20_nkick1_nsl20_npr80000_csi2/LHC_80000_prt.dat -d -t 4000 20000
+
+
+################################
+# chap. 5
+################################
+
+cd ~/Documents/DATA_HEADTAIL/multikick/LHC_newmodel
+
+# comp. 36b/1782b
+# raw average data + rise times
+read_Headtail_prt_fit.py -f LHC_36b/LHC_36b_ntwake20_nkick1_nsl20_npr200000_csi0/LHC_200000_prt.dat -f LHC_1782b/LHC_1782b_ntwake20_nkick1_nsl20_npr200000_csi0/LHC_200000_prt.dat -a -v -p 2 -e "36 bunches" -e "1782 bunches" -g 6000
+
+# SVD
+read_Headtail_prt_coupledbunch.py -f LHC_36b/LHC_36b_ntwake20_nkick1_nsl20_npr200000_csi0/LHC_200000_prt.dat -f LHC_1782b/LHC_1782b_ntwake20_nkick1_nsl20_npr200000_csi0/LHC_200000_prt.dat -t 6000 100000 -s
+
+# first bunch (effect of multiturn wake)
+read_Headtail_prt_fit.py -f LHC_36b/LHC_36b_ntwake20_nkick1_nsl20_npr200000_csi0/LHC_200000_prt.dat -f LHC_36b/LHC_36b_ntwake1_nkick1_nsl20_npr200000_csi0/LHC_200000_prt.dat -e "with multiturn wake" -e "without multiturn wake" -b 1
+
+# seventh bunch (effect of dipolar only)
+read_Headtail_prt_fit.py -f LHC_36b/LHC_dip_36b_ntwake20_nkick1_nsl20_npr200000_csi0/LHC_dip_200000_prt.dat -f LHC_36b/LHC_36b_ntwake20_nkick1_nsl20_npr200000_csi0/LHC_200000_prt.dat -e "dipolar impedances only" -e "full model" -b 7
+
+
+# measurements (injection)
+# ADT raw data
+cd ~/Documents/Mesures_LHC/MD_08052011_coupledbunch_instab/ADT
+read_ADT_fit.py -f ADT-pickups-Beam1-08-May-2011_14-46-08.data -a -g 22000 -d 40 30000 -m 20 3000 -b 7
+read_ADT_fit.py -f ADT-pickups-Beam2-08-May-2011_14-46-10.data -a -v -g 23000 -m 20 3000 -b 7
+
+# LHC-BPM SVD
+cd ~/Documents/Mesures_LHC/MD_08052011_coupledbunch_instab/LHC-BPM/BunchTurn_data
+read_LHC_BPM_coupledbunch.py -f Beam1@BunchTurn@2011_05_08@12_46_02_633.sdds -q 0.28 0.31 -e 450. -s -b 12
+
+# measurements (flat top)
+# ADT raw data
+cd ~/Documents/Mesures_LHC/MD_08052011_coupledbunch_instab/ADT
+read_ADT_fit.py -f ADT-pickups-Beam2-08-May-2011_18-13-04.data -a -g 18000 -d 30 3000 -r 150 10 -b 6
+
+# BBQ (first unstable cases)
+cd ~/Documents/Mesures_LHC/MD_08052011_coupledbunch_instab/BBQ_17h_18h30
+read_BBQ_fit.py -f TIMBER_DATA_BBQ_B1V_20110508174500CET.csv -b1 -pv -e 3500.
+
+read_BBQ_fit.py -f TIMBER_DATA_BBQ_B2V_20110508175200CET.csv -b2 -pv -e 3500.
+
+
+# HEADTAIL, stab. with octupoles
+
+read_Headtail_prt_fit.py -f LHC_ntwake20_nkick1_nsl50_npr250000_17h54_B2_m90/LHC_17h54_B2_prt.dat -f LHC_ntwake20_nkick1_nsl50_npr250000_17h54_B2_m100/LHC_17h54_B2_prt.dat -b 48 -v -e "HEADTAIL, $ I^D_{oct}=90$ A" -e "HEADTAIL, $ I^D_{oct}=100$ A"
+
+read_Headtail_prt_fit.py -f LHC_ntwake20_nkick1_nsl50_npr250000_17h54_B1_m110/LHC_17h54_B1_prt.dat -f LHC_ntwake20_nkick1_nsl50_npr250000_17h54_B1_m120/LHC_17h54_B1_prt.dat -b 48 -v -e "HEADTAIL, $ I^D_{oct}=110$ A" -e "HEADTAIL, $ I^D_{oct}=120$ A"
+
+# HEADTAIL: coupled-bunch with intrabunch
+# raw
+read_Headtail_prt_fit.py -f LHC_36b_ntwake20_nkick1_nsl50_npr250000_csi6_I3/LHC_I3_prt.dat -f /afs/cern.ch/user/n/nmounet/scratch0/DATA_HEADTAIL/LHC_1b_ntwake20_nkick1_nsl50_npr250000_csi6_I3/LHC_250000_prt.dat -v -a -p 2 -e "36 bunches" -e "1 bunch" -g 40000
+
+# hdtl
+read_Headtail_hdtl.py -f LHC_36b_ntwake20_nkick1_nsl50_npr250000_csi6_I3/LHC_I3_hdtl.dat -b 36
+
+# SVD
+read_Headtail_prt_coupledbunch.py -f LHC_36b_ntwake20_nkick1_nsl50_npr250000_csi6_I3/LHC_I3_prt.dat -s -t 40000 200000 -p
+
+
+# HEADTAIL: 1404 b
+read_Headtail_prt_fit.py -f LHC_ntwake20_nsl20_npr100000_m0_csi0_I1p7/LHC_I1p7_prt.dat -e " $ N_b = 1.7 \cdot 10^{11},\quad Q^'_{x/y}=0,\quad I^D_{oct}=0$ " -f LHC_ntwake20_nsl20_npr100000_m550_csi0_I1p15/LHC_I1p15_prt.dat -e " $ N_b = 1.15 \cdot 10^{11},\quad Q^'_{x/y}=0,\quad I^D_{oct}=550$ " -f LHC_ntwake20_nsl20_npr100000_m550_csi2_I1p7/LHC_I1p7_prt.dat -e " $ N_b = 1.7 \cdot 10^{11},\quad Q^'_{x/y}=2,\quad I^D_{oct}=550$ " -v
+read_Headtail_prt_fit.py -f LHC_ntwake20_nsl20_npr100000_m0_csi0_I1p7/LHC_I1p7_prt.dat -e " $ N_b = 1.7 \cdot 10^{11},\quad Q^'_{x/y}=0,\quad I^D_{oct}=0$ " -f LHC_ntwake20_nsl20_npr100000_m550_csi0_I1p7/LHC_I1p7_prt.dat -e " $ N_b = 1.7 \cdot 10^{11},\quad Q^'_{x/y}=0,\quad I^D_{oct}=550$ " -f LHC_ntwake20_nsl20_npr100000_m550_csi2_I1p7/LHC_I1p7_prt.dat -e " $ N_b = 1.7 \cdot 10^{11},\quad Q^'_{x/y}=2,\quad I^D_{oct}=550$ " -v
+
+read_Headtail_prt.py -f LHC_ntwake20_nsl20_npr100000_m0_csi0_I1p7/LHC_I1p7_prt.dat -e " $ N_b = 1.7 \cdot 10^{11},\quad Q^'_{x/y}=0,\quad I^D_{oct}=0$ " -f LHC_ntwake20_nsl20_npr100000_m550_csi2_I1p7/LHC_I1p7_prt.dat -e " $ N_b = 1.7 \cdot 10^{11},\quad Q^'_{x/y}=2,\quad I^D_{oct}=550$ " -f LHC_ntwake20_nsl20_npr100000_m550_csi0_I1p15/LHC_I1p15_prt.dat -e " $ N_b = 1.15 \cdot 10^{11},\quad Q^'_{x/y}=0,\quad I^D_{oct}=550$ " -f LHC_ntwake20_nsl20_npr100000_m550_csi2_I1p15/LHC_I1p15_prt.dat -e " $ N_b = 1.15 \cdot 10^{11},\quad Q^'_{x/y}=2,\quad I^D_{oct}=550$ " -v

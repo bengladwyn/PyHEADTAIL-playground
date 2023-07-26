@@ -1,0 +1,20 @@
+Machine:	LHC
+Relativistic Gamma:	6927.62871617
+Impedance Length in m:	9.0
+Maximum order of non-linear terms:	0
+Number of upper layers in the chamber wall:	1
+Layer 1 inner half gap in mm:	4
+Layer 1 frequency dependent conductivity:	examples/input_data_files/conductivity_vs_freq_hBN_example.dat
+Layer 1 real part of dielectric constant:	1
+Layer 1 frequency dependent relative complex permeability:	examples/input_data_files/ferrite_8C11_muprime_musecond.dat
+Layer 1 thickness in mm:	Infinity
+Top bottom symmetry (yes or no):	yes
+start frequency exponent (10^) in Hz:	2
+stop frequency exponent (10^) in Hz:	12
+linear (1) or logarithmic (0) or both (2) frequency scan:	0
+sampling frequency exponent (10^) in Hz (for linear):	8.0
+Number of points per decade (for log):	4
+when both, fmin of the refinement (in THz):	0.1
+when both, fmax of the refinement (in THz):	5.0
+when both, number of points in the refinement:	5000
+added frequencies (Hz):	

@@ -1,0 +1,239 @@
+# ImpedanceWake2D
+
+ImpedanceWake2D is a package containing four different codes that compute the longitudinal
+and transverse beam coupling impedances and wake functions in a multilayer axisymmetric
+or flat structure that is two dimensional (i.e. infinitely long in the longitudinal direction).
+It is part of the Impedance, Resistive-wall & Instability codes and Scripts (IRIS) package.
+
+Author: Nicolas Mounet, CERN BE/ABP/HSC, Geneva
+
+Comments / remarks are welcome and can be sent to imp-inst@cern.ch.
+
+
+
+## 1. Introduction
+
+Instabilites in circular machines (synchrotrons, colliders, accelerators, storage rings, etc.)
+due to beam-coupling impedance can be a strong limit to their operation.
+This package provides a tool to study beam coupling impedances and wakefields in 2D flat or cylindrical structures.
+
+
+
+## 2. Description of the package
+
+This repository contains various codes and scripts to compute impedance and instabilities,
+written in C++ and Python. The different folders contain:
+
+- ImpedanceWake2D: C++ code (stand-alone and shared library) to compute resistive-wall
+impedance & wake functions of infinitely long ("2D") flat or round multilayered structures,
+
+- External_libraries:
+    * GMP and MPFR: external libraries used by ALGLIB
+    * ALGLIB: C++ library for computations with high precision numbers, required by ImpedanceWake2D.
+
+- PYTHON_codes_and_scripts: 
+
+
+
+
+## 3. Installation and use
+
+>
+__Remark :__ This document only describes the installation procedure. More details on ImpedanceWake2D usage
+are provided in IW2D_user_manual.txt
+>
+
+The package was tested on Linux machines only (lxplus at CERN in 2016, Ubuntu 10.04, 12.04, 16.04, CentOS v6).
+
+For other distribution or operating systems, you are welcome to share your installation experience 
+by sending an email to imp-inst@cern.ch
+
+
+
+### 3.1 Prerequisites
+
+- Git to easily clone the repository and get the latest changes.
+- g++ and gcc compilers, with standard C++ libraries. Other compilers were not tried.
+- Python 2.6/2.7 with scientific libraries (numpy, scipy, matplotlib...) if you want to use the Python 
+impedance library and associated scripts. You can download and install anaconda or
+miniconda from https://www.continuum.io/downloads into your machine. Python 3 has not been tested.
+
+
+
+
+### 3.2 Installation
+
+>
+__Remark :__ at several places the 'bash' shell is assumed (in particular all Python
+scripts use environment variables defined in the ~/.bashrc file). If you are using another
+shell:
+- you can adapt the installation procedure (you need to change a few 'script_configure_bashrc.sh'
+files in the various directories)
+- or you can change to the bash shell each time you use the codes here (typing 'bash' in the terminal)
+- or, for lxplus at CERN, you can change your default shell to 'bash' by going to
+https://account.cern.ch/account/Management/MyAccounts.aspx then click on Services -> LXPLUS and Linux -> Settings
+>
+
+
+- __If you are not using LXPLUS__:
+
+1. Clone the Git repository from CERN's Gitlab or from its external mirror. For the second option, you will nedd a Gitlab account (free)
+
+    ```git clone https://gitlab.cern.ch/IRIS/IW2D.git```
+
+    ```git clone https://gitlab.com/IRIS_mirror/IW2D_mirror.git```
+    This creates a directory IW2D in the current directory, with the full package in it.
+
+2. Install GMP
+    - Install lzip and m4
+    
+        ```$> sudo apt install lzip ```
+
+        ```$> sudo apt install m4```
+    - Extract GMP files and configure the build
+    
+        ```$> tar xvf 01_gmp-6.1.2.tar.lz```
+
+        ```$> cd gmp-6.1.2/```
+
+        ```$> ./configure```
+    - Build, check the build and install
+    
+        ```$> sudo make```
+
+        ```$> sudo make check```
+
+        ```$> sudo make install```
+
+
+
+3. Install MPFR
+    - Extract MPFR files
+    
+        ```$> tar -xzvf 02_mpfr-3.1.5.tar.gz```
+
+        ```$> cd mpfr-3.1.5/```
+    - Configure the build: you will need to provide the GMP path
+    
+        ```$> ./configure --with-gmp-lib=/home/impedance/GMP/gmp-6.1.2 --with-gmp-include=/home/impedance/GMP/gmp-6.1.2 --disable-thread-safe```
+    - Build, check the build and install
+    
+        ```$> sudo make```
+
+        ```$> sudo make check```
+
+        ```$> sudo make install```
+
+4. Install GSL
+    - Extract GSL files and configure the compilation
+    
+        ```$> tar -xzvf 03_gsl-2.3.tar.gz```
+
+        ```$> cd gsl-2.3/```
+
+        ```$> ./configure```
+    - Build, check the build and install
+    
+        ```$> sudo make```
+
+        ```$> sudo make check```
+
+        ```$> sudo make install```
+    - Add the shared library path
+    
+        ```$> LD_LIBRARY_PATH=/usr/local/lib```
+
+        ```$> export LD_LIBRARY_PATH```
+
+5. Install ALGLIB
+    - Extract ALGLIB files and go to the mpfr subfolder created
+    
+        ```$> unzip 04_alglib-2.6.0.mpfr.zip```
+
+        ```$> cd mpfr/```
+    - Compile the library (-fPIC option is to enable the compilation of a shared library)
+    
+        ```$> .chmod +x build```
+
+        ```$> ./build gcc "-fPIC"```
+    - Check that "mpfr/out/" contains now many .h files and "libmpalglib.a"
+    - Replace "mpfr.h" in "mpfr/out/" by the one given with this package
+    
+        ```$> cp {ImpedanceWake2Ddirectory}/ImpedanceWake2D/mpfr.h {ALGLIBdirectory}/mpfr/out/```
+
+6. Compile IW2D
+    - Go in ImpedanceWake2D folder and use the Makefile made for local libraries
+    
+        ```$> cd ImpedanceWake2D/```
+
+        ```$> cp Makefile_local_GMP_MPFR Makefile```
+   - Edit the file "Makefile" and
+    
+        - change the variable PATH_ALGLIB to the local directory where you installed ALGLIB (do not forget /mpfr/out in the end),
+        - change the variable PATH_GMP to the local directory where you installed GMP,
+        - change the variable PATH_MPFR to the local directory where you installed MPFR (do not forget /src in the end).
+    - Finally:
+    
+        - Type "make" (or "make all"),
+        - To erase all the executables and libraries: "make clean".
+
+7. Optional: Install the Python library
+    - Go to IW2D/PYTHON_codes_and_scripts/General_Python_tools/
+    - Run the "script_configure_bashrc.sh" script
+    - Go to IW2D/Impedance_lib_Python/
+    - Run the "script_configure_bashrc.sh" script
+    - __Remark__: If you are using a shell different from bash, you will need to add the paths manually to your shell configuration file
+
+
+
+
+
+
+- __If you are at CERN, using LXPLUS :__
+
+1. Clone the Git repository from CERN's Gitlab, using kerberos authentication
+
+    ```git clone https://:@gitlab.cern.ch:8443/IRIS/IW2D.git```
+
+    This creates a directory IW2D in the current directory, with the full package in it.
+
+
+2. Install ALGLIB
+    - Go in the External_libraries folder
+
+        ```$> cd External_libraries```
+    - Extract ALGLIB files and go to the mpfr subfolder created
+    
+        ```$> unzip 04_alglib-2.6.0.mpfr.zip```
+
+        ```$> cd mpfr/```
+    - Compile the library (-fPIC option is to enable the compilation of a shared library)
+    
+        ```$> .chmod +x build```
+
+        ```$> ./build gcc "-fPIC"```
+    - Check that "mpfr/out/" contains now many .h files and "libmpalglib.a"
+    - Replace "mpfr.h" in "mpfr/out/" by the one given with this package
+    
+        ```$> cp {ImpedanceWake2Ddirectory}/ImpedanceWake2D/mpfr.h {ALGLIBdirectory}/mpfr/out/```
+
+3. Compile IW2D
+    - Go in ImpedanceWake2D folder and use the Makefile made for LXPLUS libraries
+    
+        ```$> cd ImpedanceWake2D/```
+
+        ```$> cp Makefile_lxplus Makefile```
+   - Edit the file "Makefile" and
+    
+        - change the variable PATH_ALGLIB to the local directory where you installed ALGLIB (do not forget /mpfr/out in the end)
+    - Finally:
+    
+        - Type "make" (or "make all"),
+        - To erase all the executables and libraries: "make clean".
+
+4. Optional: Install the Python library
+    - Go to IW2D/PYTHON_codes_and_scripts/General_Python_tools/
+    - Run the "script_configure_bashrc.sh" script
+    - Go to IW2D/Impedance_lib_Python/
+    - Run the "script_configure_bashrc.sh" script
+    - __Remark__: If you are using a shell different from bash, you will need to add the paths manually to your shell configuration file

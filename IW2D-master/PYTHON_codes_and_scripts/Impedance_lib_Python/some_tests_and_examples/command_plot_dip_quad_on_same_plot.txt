@@ -1,0 +1,21 @@
+# example of plotting many impedance components on the same plot
+# (from Ascii files coming from the write_imp_wake_mod function in Impedance.py)
+
+# these are ipython (interactive python) commands
+
+Zxd=read_ncol_file('../DELPHI_results/LHC/LHC_HLLHC_new_comp_BBcutoff50GHz/Zxdip_Allthemachine_4TeV_B1_2012_v2.dat',ignored_rows=1)
+Zyd=read_ncol_file('../DELPHI_results/LHC/LHC_HLLHC_new_comp_BBcutoff50GHz/Zydip_Allthemachine_4TeV_B1_2012_v2.dat',ignored_rows=1)
+Zyq=read_ncol_file('../DELPHI_results/LHC/LHC_HLLHC_new_comp_BBcutoff50GHz/Zyquad_Allthemachine_4TeV_B1_2012_v2.dat',ignored_rows=1)
+Zxq=read_ncol_file('../DELPHI_results/LHC/LHC_HLLHC_new_comp_BBcutoff50GHz/Zxquad_Allthemachine_4TeV_B1_2012_v2.dat',ignored_rows=1)
+
+fig,ax=init_figure(axes=[0.13,0.16,0.65,0.8])
+plot(Zxd[:,0],Zxd[:,1]," $ Re[Z_x^{dip}] $ ",'-b'," $ Z_x [\Omega /\mathrm{m}] $ ",ax,3,xlab='Frequency [Hz]',plotevery=10)
+plot(Zxd[:,0],Zxd[:,2]," $ Im[Z_x^{dip}] $ ",'--b'," $ Z_x [\Omega /\mathrm{m}] $ ",ax,3,xlab='Frequency [Hz]',plotevery=10)
+plot(Zyd[:,0],Zyd[:,1]," $ Re[Z_y^{dip}] $ ",'-r'," $ Z [\Omega /\mathrm{m}] $ ",ax,3,xlab='Frequency [Hz]',plotevery=10)
+plot(Zyd[:,0],Zyd[:,2]," $ Im[Z_y^{dip}] $ ",'--r'," $ Z [\Omega /\mathrm{m}] $ ",ax,3,xlab='Frequency [Hz]',plotevery=10)
+plot(Zxq[:,0],np.abs(Zxq[:,1])," $ |Re[Z_x^{quad}]| $ ",'-g'," $ Z_x [\Omega /\mathrm{m}] $ ",ax,3,xlab='Frequency [Hz]',plotevery=10)
+plot(Zxq[:,0],np.abs(Zxq[:,2])," $ |Im[Z_x^{quad}]| $ ",'--g'," $ Z_x [\Omega /\mathrm{m}] $ ",ax,3,xlab='Frequency [Hz]',plotevery=10)
+plot(Zyq[:,0],np.abs(Zyq[:,1])," $ |Re[Z_y^{quad}]| $ ",'-m'," $ Z [\Omega /\mathrm{m}] $ ",ax,3,xlab='Frequency [Hz]',plotevery=10)
+plot(Zyq[:,0],np.abs(Zyq[:,2])," $ |Im[Z_y^{quad}]| $ ",'--m'," $ Z [\Omega /\mathrm{m}] $ ",ax,3,xlab='Frequency [Hz]',plotevery=10)
+end_figure(fig,ax,legpos=(1.05,-0.05))
+pylab.show()

@@ -1,0 +1,17 @@
+This folder contains the results of IW2D computations for five cases:
+round chamber
+flat chamber
+flat chamber with non-linear terms
+round chamber with wake
+flat chamber with wake
+
+The results were obtained with an installation on lxplus779.cern.ch (CC7), on 2022-09-03
+
+The run times are approximately:
+<1 sec for round chamber
+5  sec for flat chamber
+42 sec for flat chamber non-linear
+10 sec for round chamber with wake
+42 sec for flat chamber with wake
+
+This folder also contains a few older examples, for the LHC injection protection collimator (TDI) and for SLSII.

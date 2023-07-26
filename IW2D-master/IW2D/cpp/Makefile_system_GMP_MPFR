@@ -1,0 +1,76 @@
+.SUFFIXES: .cc
+
+CC = g++
+
+OPTS = -O2
+
+PATH_CONDA_LIB = $(CONDA_PREFIX:%=%/lib)
+PATH_CONDA_INC = $(CONDA_PREFIX:%=%/include)
+
+# Make conda opts that are empty if CONDA_PREFIX is, i.e. if not in a conda environment
+LIBOPTS_CONDA = $(PATH_CONDA_LIB:%=-Wl,-rpath,% -L)$(PATH_CONDA_LIB)
+INCOPTS_CONDA = $(PATH_CONDA_INC:%=-I%)
+
+LIBOPTS = $(LIBOPTS_CONDA) -lgmp -lmpfr -lm -lstdc++ -lgsl -lgslcblas -larb
+INCOPTS = -I. $(INCOPTS_CONDA)
+
+LOPTS = 
+
+
+# -Wall -> warning all
+
+all: round wakeround flat wakeflat lib Makefile
+
+amp.o: amp.cpp
+	$(CC) $(LOPTS) -fPIC -o amp.o -c amp.cpp $(INCOPTS)
+
+ap.o: ap.cpp
+	$(CC) $(LOPTS) -fPIC -o ap.o -c ap.cpp $(INCOPTS)
+
+fourier.o: fourier.cc
+	$(CC) $(LOPTS) -fPIC -o fourier.o -c fourier.cc $(INCOPTS)
+
+interp.o: interp.cc
+	$(CC) $(LOPTS) -fPIC -o interp.o -c interp.cc $(INCOPTS)
+
+input.o: input.cc
+	$(CC) $(LOPTS) -fPIC -o input.o -c input.cc $(INCOPTS)
+
+multiprecision.o: multiprecision.cc
+	$(CC) $(LOPTS) -fPIC -o multiprecision.o -c multiprecision.cc $(INCOPTS)
+
+round.o: round.cc
+	$(CC) $(LOPTS) -fPIC -o round.o -c round.cc $(INCOPTS)
+
+roundchamber.o: roundchamber.cc
+	$(CC) $(LOPTS) -fPIC -o roundchamber.o -c roundchamber.cc $(INCOPTS)
+
+round: roundchamber.o interp.o round.o input.o multiprecision.o amp.o ap.o
+	$(CC) $(LOPTS) -o roundchamber.x roundchamber.o interp.o round.o input.o multiprecision.o amp.o ap.o -O2 $(LIBOPTS)
+
+wake_roundchamber.o: wake_roundchamber.cc
+	$(CC) $(LOPTS) -fPIC -o wake_roundchamber.o -c wake_roundchamber.cc $(INCOPTS)
+
+wakeround: wake_roundchamber.o round.o input.o multiprecision.o fourier.o interp.o amp.o ap.o
+	$(CC) $(LOPTS) -o wake_roundchamber.x wake_roundchamber.o round.o input.o multiprecision.o fourier.o interp.o amp.o ap.o -O2 $(LIBOPTS)
+
+flat.o: flat.cc
+	$(CC) $(LOPTS) -fPIC -o flat.o -c flat.cc $(INCOPTS)
+
+flatchamber.o: flatchamber.cc
+	$(CC) $(LOPTS) -fPIC -o flatchamber.o -c flatchamber.cc $(INCOPTS)
+
+flat: flatchamber.o interp.o flat.o input.o multiprecision.o amp.o ap.o
+	$(CC) $(LOPTS) -o flatchamber.x flatchamber.o interp.o flat.o input.o multiprecision.o amp.o ap.o -O2 $(LIBOPTS)
+
+wake_flatchamber.o: wake_flatchamber.cc
+	$(CC) $(LOPTS) -fPIC -o wake_flatchamber.o -c wake_flatchamber.cc $(INCOPTS)
+
+wakeflat: wake_flatchamber.o flat.o input.o multiprecision.o fourier.o interp.o amp.o ap.o
+	$(CC) $(LOPTS) -o wake_flatchamber.x wake_flatchamber.o flat.o input.o multiprecision.o fourier.o interp.o amp.o ap.o -O2 $(LIBOPTS)
+
+clean:
+	rm -f *.o libIW2D.so *.x
+
+lib: round.o input.o multiprecision.o fourier.o interp.o
+	$(CC) ${LOPTS} -shared -o libIW2D.so round.o input.o multiprecision.o fourier.o interp.o -O2 $(LIBOPTS) 

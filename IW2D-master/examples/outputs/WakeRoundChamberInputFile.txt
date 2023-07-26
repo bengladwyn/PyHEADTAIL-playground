@@ -1,0 +1,24 @@
+Machine:	LHC
+Relativistic Gamma:	10000
+Impedance Length in m:	100
+Number of layers:	1
+Layer 1 inner radius in mm:	4
+Layer 1 DC resistivity (Ohm.m):	7.2e-7
+Layer 1 relaxation time for resistivity (ps):	0
+Layer 1 real part of dielectric constant:	1
+Layer 1 magnetic susceptibility:	0
+Layer 1 relaxation frequency of permeability (MHz):	Infinity
+Layer 1 thickness in mm:	Infinity
+linear (1) or logarithmic (0) or both (2) scan in z for the wake:	1
+sampling distance in m for the linear sampling:	0.5e-4
+zmin in m of the linear sampling:	-0.001
+zmax in m of the linear sampling:	0.001
+Number of points per decade for the logarithmic sampling:	10
+exponent (10^) of zmin (in m) of the logarithmic sampling:	-2
+exponent (10^) of zmax (in m) of the logarithmic sampling:	6
+added z [m]:	-1e-8 1e-8
+Yokoya factors long, xdip, ydip, xquad, yquad:	1 1 1 0 0
+factor weighting the longitudinal impedance error:	10.
+tolerance (in wake units) to achieve:	1.e13
+frequency above which the mesh bisecting is linear [Hz]:	1.e11
+Comments for the output files names:	_test_long_wake_in_front_ss_gamma_1e4
